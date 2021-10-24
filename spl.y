@@ -1,7 +1,98 @@
 %{
-void yyerror(char *s);
-int yylex(void);
+/* SPL01.y - SPL01 parser */
+/* Author: Peter Parsons */
+/* Revision: Oct 08 BCT */
+/*              BCT Aug 21  - Added out of memory check */
+
+/* Skeleton yacc file that can be used */
+/* This file shows how a parser could build up a parse tree
+
+   Do not use this until you need to, and understand some
+   of the material on tree building and walking.             */
+
+/* declare some standard headers to be used to import declarations
+   and libraries into the parser. */
+
+#include <stdio.h>
+#include <stdlib.h>
+
+/* make forward declarations to avoid compiler warnings */
+int yylex (void);
+void yyerror (char *);
+
+/* 
+   Some constants.
+*/
+
+  /* These constants are used later in the code */
+#define SYMTABSIZE     50
+#define IDLENGTH       15
+#define NOTHING        -1
+#define INDENTOFFSET    2
+
+  enum ParseTreeNodeType { PROGRAM, BLOCK } ;  
+                          /* Add more types here, as more nodes
+                                           added to tree */
+
+#ifndef TRUE
+#define TRUE 1
+#endif
+
+#ifndef FALSE
+#define FALSE 0
+#endif
+
+#ifndef NULL
+#define NULL 0
+#endif
+
+/* ------------- parse tree definition --------------------------- */
+
+struct treeNode {
+    int  item;
+    int  nodeIdentifier;
+    struct treeNode *first;
+    struct treeNode *second;
+    struct treeNode *third;
+  };
+
+typedef  struct treeNode TREE_NODE;
+typedef  TREE_NODE        *TERNARY_TREE;
+
+/* ------------- forward declarations --------------------------- */
+
+TERNARY_TREE create_node(int,int,TERNARY_TREE,TERNARY_TREE,TERNARY_TREE);
+
+/* ------------- symbol table definition --------------------------- */
+
+struct symTabNode {
+    char identifier[IDLENGTH];
+};
+
+typedef  struct symTabNode SYMTABNODE;
+typedef  SYMTABNODE        *SYMTABNODEPTR;
+
+SYMTABNODEPTR  symTab[SYMTABSIZE]; 
+
+int currentSymTabSize = 0;
+
 %}
+
+/****************/
+/* Start symbol */
+/****************/
+
+%start  program
+
+/**********************/
+/* Action value types */
+/**********************/
+
+%union {
+    int iVal;
+    TERNARY_TREE  tVal;
+}
+
 %token ENDP DECLARATIONS CODE TYPE CHARACTER_TYPE INTEGER_TYPE REAL_TYPE IF THEN ENDIF ELSE DO WHILE ENDDO ENDWHILE FOR IS BY TO ENDFOR WRITE NEWLINE READ NOT AND OR OF GREATER_THAN_OR_EQUAL LESS_THAN_OR_EQUAL NOT_EQUAL LESS_THAN GREATER_THAN EQUAL ASSIGNEMENT MINUS PLUS TIMES DIVIDE BRA KET COLON PERIOD COMMA SEMICOLON IDENTIFIER NUMBER CHARACTER
 %%
 program : identifier COLON block ENDP identifier PERIOD
@@ -58,4 +149,24 @@ identifier : IDENTIFIER
 number : NUMBER
     ;
 %%
+
+/* Code for routines for managing the Parse Tree */
+
+TERNARY_TREE create_node(int ival, int case_identifier, TERNARY_TREE p1,
+			 TERNARY_TREE  p2, TERNARY_TREE  p3)
+{
+    TERNARY_TREE t;
+    t = (TERNARY_TREE)malloc(sizeof(TREE_NODE));
+    if (t == NULL) { 
+	    fprintf(stderr, "create_node:Out of memory: %d %lu bytes\n", case_identifier, sizeof(TREE_NODE));
+		return(t); 
+		} 
+    t->item = ival;
+    t->nodeIdentifier = case_identifier;
+    t->first = p1;
+    t->second = p2;
+    t->third = p3;
+    return (t);
+}
+
 #include "lex.yy.c"

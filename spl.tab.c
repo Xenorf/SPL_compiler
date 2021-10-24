@@ -68,10 +68,85 @@
 /* First part of user prologue.  */
 #line 1 "spl.y"
 
-void yyerror(char *s);
-int yylex(void);
+/* SPL01.y - SPL01 parser */
+/* Author: Peter Parsons */
+/* Revision: Oct 08 BCT */
+/*              BCT Aug 21  - Added out of memory check */
 
-#line 75 "spl.tab.c"
+/* Skeleton yacc file that can be used */
+/* This file shows how a parser could build up a parse tree
+
+   Do not use this until you need to, and understand some
+   of the material on tree building and walking.             */
+
+/* declare some standard headers to be used to import declarations
+   and libraries into the parser. */
+
+#include <stdio.h>
+#include <stdlib.h>
+
+/* make forward declarations to avoid compiler warnings */
+int yylex (void);
+void yyerror (char *);
+
+/* 
+   Some constants.
+*/
+
+  /* These constants are used later in the code */
+#define SYMTABSIZE     50
+#define IDLENGTH       15
+#define NOTHING        -1
+#define INDENTOFFSET    2
+
+  enum ParseTreeNodeType { PROGRAM, BLOCK } ;  
+                          /* Add more types here, as more nodes
+                                           added to tree */
+
+#ifndef TRUE
+#define TRUE 1
+#endif
+
+#ifndef FALSE
+#define FALSE 0
+#endif
+
+#ifndef NULL
+#define NULL 0
+#endif
+
+/* ------------- parse tree definition --------------------------- */
+
+struct treeNode {
+    int  item;
+    int  nodeIdentifier;
+    struct treeNode *first;
+    struct treeNode *second;
+    struct treeNode *third;
+  };
+
+typedef  struct treeNode TREE_NODE;
+typedef  TREE_NODE        *TERNARY_TREE;
+
+/* ------------- forward declarations --------------------------- */
+
+TERNARY_TREE create_node(int,int,TERNARY_TREE,TERNARY_TREE,TERNARY_TREE);
+
+/* ------------- symbol table definition --------------------------- */
+
+struct symTabNode {
+    char identifier[IDLENGTH];
+};
+
+typedef  struct symTabNode SYMTABNODE;
+typedef  SYMTABNODE        *SYMTABNODEPTR;
+
+SYMTABNODEPTR  symTab[SYMTABSIZE]; 
+
+int currentSymTabSize = 0;
+
+
+#line 150 "spl.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -168,7 +243,17 @@ extern int yydebug;
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+union YYSTYPE
+{
+#line 91 "spl.y"
+
+    int iVal;
+    TERNARY_TREE  tVal;
+
+#line 254 "spl.tab.c"
+
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
@@ -543,15 +628,15 @@ static const yytype_int8 yytranslate[] =
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_int8 yyrline[] =
+static const yytype_uint8 yyrline[] =
 {
-       0,     7,     7,     9,     9,    11,    11,    13,    13,    15,
-      15,    15,    17,    17,    19,    19,    19,    19,    19,    19,
-      19,    21,    23,    24,    26,    28,    30,    32,    32,    34,
-      36,    36,    38,    38,    38,    38,    40,    40,    40,    40,
-      40,    40,    42,    42,    42,    44,    44,    44,    46,    46,
-      46,    48,    48,    50,    52,    52,    52,    52,    54,    54,
-      56,    58
+       0,    98,    98,   100,   100,   102,   102,   104,   104,   106,
+     106,   106,   108,   108,   110,   110,   110,   110,   110,   110,
+     110,   112,   114,   115,   117,   119,   121,   123,   123,   125,
+     127,   127,   129,   129,   129,   129,   131,   131,   131,   131,
+     131,   131,   133,   133,   133,   135,   135,   135,   137,   137,
+     137,   139,   139,   141,   143,   143,   143,   143,   145,   145,
+     147,   149
 };
 #endif
 
@@ -1430,7 +1515,7 @@ yyreduce:
   switch (yyn)
     {
 
-#line 1434 "spl.tab.c"
+#line 1519 "spl.tab.c"
 
       default: break;
     }
@@ -1662,6 +1747,26 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 60 "spl.y"
+#line 151 "spl.y"
+
+
+/* Code for routines for managing the Parse Tree */
+
+TERNARY_TREE create_node(int ival, int case_identifier, TERNARY_TREE p1,
+			 TERNARY_TREE  p2, TERNARY_TREE  p3)
+{
+    TERNARY_TREE t;
+    t = (TERNARY_TREE)malloc(sizeof(TREE_NODE));
+    if (t == NULL) { 
+	    fprintf(stderr, "create_node:Out of memory: %d %lu bytes\n", case_identifier, sizeof(TREE_NODE));
+		return(t); 
+		} 
+    t->item = ival;
+    t->nodeIdentifier = case_identifier;
+    t->first = p1;
+    t->second = p2;
+    t->third = p3;
+    return (t);
+}
 
 #include "lex.yy.c"
