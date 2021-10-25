@@ -440,11 +440,23 @@ char *yytext;
 #define INITIAL 0
 #line 2 "spl.l"
 #ifdef PRINT
-#define RETURN(typearg,token) printf(#typearg" "#token "\n")
+#define RETURN(typearg,token) printf(#typearg" "#token "\n");
+#define RETURN_ID(typearg,token) printf("%s " #token"\n",yytext);
+#define RETURN_NUMBER(typearg,token) printf("%d " #token"\n",atoi(yytext));
 #else
-#define RETURN(typearg,token) return(token)
+#define RETURN(typearg,token) return(token);
+#define RETURN_ID(typearg,token) yylval.iVal = installId(yytext); return(token);
+#define RETURN_NUMBER(typearg,token) yylval.iVal = atoi(yytext); return(token);
 #endif
-#line 448 "lex.yy.c"
+#ifndef PRINT
+/* Declare Symbol Table Type and Array as imported types */
+
+#include <string.h>
+extern SYMTABNODEPTR symTab[SYMTABSIZE];
+extern int currentSymTabSize;
+int installId(char *);
+#endif
+#line 460 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -606,10 +618,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 15 "spl.l"
+#line 27 "spl.l"
 
-             int k;
-#line 613 "lex.yy.c"
+#line 624 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -694,253 +705,250 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 17 "spl.l"
+#line 28 "spl.l"
 ;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 18 "spl.l"
+#line 29 "spl.l"
 RETURN(keyword,ENDP);
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 19 "spl.l"
+#line 30 "spl.l"
 RETURN(keyword,DECLARATIONS);
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 20 "spl.l"
+#line 31 "spl.l"
 RETURN(keyword,CODE);
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 21 "spl.l"
+#line 32 "spl.l"
 RETURN(keyword,TYPE);
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 22 "spl.l"
+#line 33 "spl.l"
 RETURN(keyword,CHARACTER_TYPE);
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 23 "spl.l"
+#line 34 "spl.l"
 RETURN(keyword,INTEGER_TYPE);
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 24 "spl.l"
+#line 35 "spl.l"
 RETURN(keyword,REAL_TYPE);
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 25 "spl.l"
+#line 36 "spl.l"
 RETURN(keyword,IF);
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 26 "spl.l"
+#line 37 "spl.l"
 RETURN(keyword,THEN);
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 27 "spl.l"
+#line 38 "spl.l"
 RETURN(keyword,ENDIF);
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 28 "spl.l"
+#line 39 "spl.l"
 RETURN(keyword,ELSE);
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 29 "spl.l"
+#line 40 "spl.l"
 RETURN(keyword,DO);
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 30 "spl.l"
+#line 41 "spl.l"
 RETURN(keyword,WHILE);
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 31 "spl.l"
+#line 42 "spl.l"
 RETURN(keyword,ENDDO);
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 32 "spl.l"
+#line 43 "spl.l"
 RETURN(keyword,ENDWHILE);
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 33 "spl.l"
+#line 44 "spl.l"
 RETURN(keyword,FOR);
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 34 "spl.l"
+#line 45 "spl.l"
 RETURN(keyword,IS);
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 35 "spl.l"
+#line 46 "spl.l"
 RETURN(keyword,BY);
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 36 "spl.l"
+#line 47 "spl.l"
 RETURN(keyword,TO);
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 37 "spl.l"
+#line 48 "spl.l"
 RETURN(keyword,ENDFOR);
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 38 "spl.l"
+#line 49 "spl.l"
 RETURN(keyword,WRITE);
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 39 "spl.l"
+#line 50 "spl.l"
 RETURN(keyword,NEWLINE);
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 40 "spl.l"
+#line 51 "spl.l"
 RETURN(keyword,READ);
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 41 "spl.l"
+#line 52 "spl.l"
 RETURN(keyword,NOT);
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 42 "spl.l"
+#line 53 "spl.l"
 RETURN(keyword,AND);
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 43 "spl.l"
+#line 54 "spl.l"
 RETURN(keyword,OR);
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 44 "spl.l"
+#line 55 "spl.l"
 RETURN(keyword,OF);
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 45 "spl.l"
+#line 56 "spl.l"
 RETURN(operator,GREATER_THAN_OR_EQUAL);
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 46 "spl.l"
+#line 57 "spl.l"
 RETURN(operator,LESS_THAN_OR_EQUAL);
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 47 "spl.l"
+#line 58 "spl.l"
 RETURN(operator,NOT_EQUAL);
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 48 "spl.l"
+#line 59 "spl.l"
 RETURN(operator,LESS_THAN);
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 49 "spl.l"
+#line 60 "spl.l"
 RETURN(operator,GREATER_THAN);
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 50 "spl.l"
+#line 61 "spl.l"
 RETURN(operator,EQUAL);
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 51 "spl.l"
+#line 62 "spl.l"
 RETURN(operator,ASSIGNEMENT);
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 52 "spl.l"
+#line 63 "spl.l"
 RETURN(operator,MINUS);
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 53 "spl.l"
+#line 64 "spl.l"
 RETURN(operator,PLUS);
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 54 "spl.l"
+#line 65 "spl.l"
 RETURN(operator,TIMES);
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 55 "spl.l"
+#line 66 "spl.l"
 RETURN(operator,DIVIDE);
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 56 "spl.l"
+#line 67 "spl.l"
 RETURN(separator,BRA);
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 57 "spl.l"
+#line 68 "spl.l"
 RETURN(separator,KET);
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 58 "spl.l"
+#line 69 "spl.l"
 RETURN(separator,COLON);
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 59 "spl.l"
+#line 70 "spl.l"
 RETURN(separator,PERIOD);
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 60 "spl.l"
+#line 71 "spl.l"
 RETURN(separator,COMMA);
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 61 "spl.l"
+#line 72 "spl.l"
 RETURN(separator,SEMICOLON);
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 62 "spl.l"
+#line 73 "spl.l"
 RETURN(character,CHARACTER);
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 63 "spl.l"
-RETURN(identifier,IDENTIFIER);
+#line 74 "spl.l"
+RETURN_ID(identifier,IDENTIFIER);
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 64 "spl.l"
-{
-                k = atoi(yytext);
-                RETURN(decimal_number,NUMBER);
-                };
+#line 75 "spl.l"
+RETURN_NUMBER(decimal_number,NUMBER)
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 68 "spl.l"
+#line 77 "spl.l"
 ECHO;
 	YY_BREAK
-#line 944 "lex.yy.c"
+#line 952 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1830,4 +1838,69 @@ int main()
 	return 0;
 	}
 #endif
-#line 68 "spl.l"
+#line 77 "spl.l"
+
+#include <string.h>
+#ifndef PRINT
+/* Here is the code for the library of symbol table routines */
+
+/* code for a simple symbol table, which is an array of pointers to
+   structs, each of which contains an identifier.
+*/
+
+
+SYMTABNODEPTR newSymTabNode()
+{
+    return ((SYMTABNODEPTR)malloc(sizeof(SYMTABNODE)));
+}
+
+int lookup(char *s)
+{
+    extern SYMTABNODEPTR symTab[SYMTABSIZE];
+    extern int currentSymTabSize;
+    int i;
+
+    for(i=0; i<currentSymTabSize; i++)
+    {
+        if(strncmp(s,symTab[i]->identifier,IDLENGTH) == 0)
+        {
+            return (i);
+        }
+    }
+    return (-1);    
+}
+
+/* Look up an identifier in the symbol table, if its there return
+   its index.  If its not there, put it in the end position,
+   as long as the table isn't full, and return its index.
+*/
+
+int installId(char *id) 
+{
+    extern SYMTABNODEPTR symTab[SYMTABSIZE]; 
+    extern int currentSymTabSize;
+    int index;
+
+    index = lookup(id);
+    if (index >= 0)
+    {
+        return (index);
+    }
+    else 
+       if (currentSymTabSize >= SYMTABSIZE) 
+          /* SYMTAB is full */
+          return (NOTHING) ;
+    else
+    {
+       symTab[currentSymTabSize] = newSymTabNode();
+	   if (symTab[currentSymTabSize] == NULL) { 
+	      fprintf(stderr, "installId:Out of memory: %s %lu\n", id, sizeof(SYMTABNODEPTR)); 
+		  return(NOTHING);
+		  }
+       /* Recommended code for preventing buffer overrun on bounded strings */
+       strncpy(symTab[currentSymTabSize]->identifier,id,IDLENGTH);
+       symTab[currentSymTabSize]->identifier[IDLENGTH-1] = '\0';
+       return(currentSymTabSize++);
+    }
+}
+#endif
