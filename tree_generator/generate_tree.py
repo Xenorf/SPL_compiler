@@ -1,32 +1,45 @@
-from __future__ import print_function
 import json
-import sys
+import random
+
+leafs,random_numbers = [],[0]
 
 
-# s = '{"PROGRAM":"ProgB","children":[{"BLOCK":"NOTHING","children":[{"DECLARATION_BLOCK":"NOTHING","children":[{"IDENTIFIER_LIST":"b","children":[{"IDENTIFIER_VALUE":"a"},"NULL","NULL"]},{"TYPE_VALUE":"263","children":["NULL","NULL","NULL"]},{"DECLARATION_BLOCK":"NOTHING","children":[{"IDENTIFIER_VALUE":"c"},{"TYPE_VALUE":"262","children":["NULL","NULL","NULL"]},{"DECLARATION_BLOCK":"NOTHING","children":[{"IDENTIFIER_LIST":"e","children":[{"IDENTIFIER_VALUE":"d"},"NULL","NULL"]},{"TYPE_VALUE":"264","children":["NULL","NULL","NULL"]},"NULL"]}]}]},{"STATEMENT_LIST":"NOTHING","children":[{"STATEMENT_LIST":"NOTHING","children":[{"STATEMENT_LIST":"NOTHING","children":[{"STATEMENT_LIST":"NOTHING","children":[{"STATEMENT_LIST":"NOTHING","children":[{"STATEMENT_LIST":"NOTHING","children":[{"STATEMENT_LIST":"NOTHING","children":[{"STATEMENT_LIST":"NOTHING","children":[{"STATEMENT_LIST":"NOTHING","children":[{"STATEMENT_LIST":"NOTHING","children":[{"STATEMENT_LIST":"NOTHING","children":[{"STATEMENT":"NOTHING","children":[{"READ_STATEMENT":"a","children":["NULL","NULL","NULL"]},"NULL","NULL"]},"NULL","NULL"]},{"STATEMENT":"NOTHING","children":[{"READ_STATEMENT":"b","children":["NULL","NULL","NULL"]},"NULL","NULL"]},"NULL"]},{"STATEMENT":"NOTHING","children":[{"IF_STATEMENT":"NOTHING","children":[{"CONDITIONAL":"NOTHING","children":[{"EXPRESSION":"NOTHING","children":[{"TERM":"NOTHING","children":[{"IDENTIFIER_VALUE":"a"},"NULL","NULL"]},"NULL","NULL"]},{"COMPARATOR":"289","children":["NULL","NULL","NULL"]},{"EXPRESSION":"NOTHING","children":[{"TERM":"NOTHING","children":[{"IDENTIFIER_VALUE":"b"},"NULL","NULL"]},"NULL","NULL"]}]},{"STATEMENT_LIST":"NOTHING","children":[{"STATEMENT":"NOTHING","children":[{"WRITE_STATEMENT":"NOTHING","children":[{"OUTPUT_LIST":"NOTHING","children":[{"VALUE":"NOTHING","children":[{"CONSTANT":"NOTHING","children":[{"CHARACTER_CONSTANT":"\'A\'"},"NULL","NULL"]},"NULL","NULL"]},"NULL","NULL"]},"NULL","NULL"]},"NULL","NULL"]},"NULL","NULL"]},{"STATEMENT_LIST":"NOTHING","children":[{"STATEMENT":"NOTHING","children":[{"WRITE_STATEMENT":"NOTHING","children":[{"OUTPUT_LIST":"NOTHING","children":[{"VALUE":"NOTHING","children":[{"CONSTANT":"NOTHING","children":[{"CHARACTER_CONSTANT":"\'B\'"},"NULL","NULL"]},"NULL","NULL"]},"NULL","NULL"]},"NULL","NULL"]},"NULL","NULL"]},"NULL","NULL"]}]},"NULL","NULL"]},"NULL"]},{"STATEMENT":"NOTHING","children":[{"WRITE_STATEMENT":"NEWLINE"},"NULL","NULL"]},"NULL"]},{"STATEMENT":"NOTHING","children":[{"READ_STATEMENT":"d","children":["NULL","NULL","NULL"]},"NULL","NULL"]},"NULL"]},{"STATEMENT":"NOTHING","children":[{"ASSIGNMENT_STATEMENT":"e","children":[{"EXPRESSION":"NOTHING","children":[{"TERM":"NOTHING","children":[{"TERM":"NOTHING","children":[{"IDENTIFIER_VALUE":"d"},"NULL","NULL"]},{"VALUE":"NOTHING","children":[{"CONSTANT":"NOTHING","children":[{"NUMBER_CONSTANT":"NOTHING","children":[{"NUMBER_VALUE":"2"},{"NUMBER_VALUE":"3"},"NULL"]},"NULL","NULL"]},"NULL","NULL"]},"NULL"]},"NULL","NULL"]},"NULL","NULL"]},"NULL","NULL"]},"NULL"]},{"STATEMENT":"NOTHING","children":[{"WRITE_STATEMENT":"NOTHING","children":[{"OUTPUT_LIST":"NOTHING","children":[{"IDENTIFIER_VALUE":"e"},"NULL","NULL"]},"NULL","NULL"]},"NULL","NULL"]},"NULL"]},{"STATEMENT":"NOTHING","children":[{"WRITE_STATEMENT":"NEWLINE"},"NULL","NULL"]},"NULL"]},{"STATEMENT":"NOTHING","children":[{"READ_STATEMENT":"c","children":["NULL","NULL","NULL"]},"NULL","NULL"]},"NULL"]},{"STATEMENT":"NOTHING","children":[{"WRITE_STATEMENT":"NOTHING","children":[{"OUTPUT_LIST":"NOTHING","children":[{"IDENTIFIER_VALUE":"c"},"NULL","NULL"]},"NULL","NULL"]},"NULL","NULL"]},"NULL"]},{"STATEMENT":"NOTHING","children":[{"WRITE_STATEMENT":"NEWLINE"},"NULL","NULL"]},"NULL"]},"NULL"]},"NULL","NULL"]}'
-with open("tree_generator/output",'r') as f:
-    s = f.read().strip("\n")
-# print(s)
-data = json.loads(s)
+def generate_new_random():
+    new_random = 0
+    while new_random in random_numbers:
+        new_random = random.randrange(1,10000)
+    random_numbers.append(new_random)
+    return new_random
 
-leafs = []
-def get_leafs(treedict, parent=None,child_nb=0,parent_value=0) :
+# Read data from the file to make a string and then interpret it as JSON
+def read_parser_output() :
+    with open("tree_generator/output",'r') as f:
+        s = f.read().strip("\n")
+    data = json.loads(s)
+    return data
+
+# Parse the JSON to make an matrix with rows being a reference between a parent and a child and the value of the child
+def get_leafs(treedict, parent=None,parent_nb=0,parent_value=0) :
     if treedict == "NULL" :
         return
     name = next(iter(treedict.keys()))
     parent_value = treedict[name]
+    child_nb=generate_new_random()
     if parent is not None:
-        leafs.append((parent+str(child_nb-1), name+str(child_nb),parent_value))
-    
+        leafs.append((parent+str(parent_nb), name+str(child_nb),parent_value))
     if "children" in treedict.keys() :
-        for item in treedict["children"] :
-            get_leafs(item,parent = name,child_nb=child_nb+1,parent_value=parent_value)
+        for j in range(1,len(treedict["children"])) :
+            get_leafs(treedict["children"][j-1],parent = name,parent_nb=child_nb,parent_value=parent_value)
 
-get_leafs(data)
+# Printing the matrix in an understandable way for Graphviz
+def print_graphviz_tree(leafs):
+    print('strict digraph tree {')
+    for row in leafs:
+        row_nodigit = ''.join([i for i in row[1] if not i.isdigit()])
+        print('{0} [label="{1} {2}"];'.format(row[1],row_nodigit,row[2].replace("'","")))
+        print('    {0} -> {1};'.format(row[0],row[1]))
+    print('}')
 
-print('strict digraph tree {')
-for row in leafs:
-    row_nodigit = ''.join([i for i in row[1] if not i.isdigit()])
-    print('{0} [label="{1} {2}"];'.format(row[1],row_nodigit,row[2].replace("'","")))
-    print('    {0} -> {1};'.format(row[0],row[1]))
-print('}')
+data = read_parser_output()
+get_leafs(data,"ROOT")
+print_graphviz_tree(leafs)

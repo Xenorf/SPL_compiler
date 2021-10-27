@@ -392,6 +392,15 @@ void PrintTree(TERNARY_TREE t)
         } else if (t->nodeIdentifier == IDENTIFIER_VALUE) {
             printf("{\"%s\":\"%s\"}",NodeName[t->nodeIdentifier],symTab[t->item]->identifier);
             return;
+        } else if (t->nodeIdentifier == TYPE_VALUE && t->item == CHARACTER_TYPE) {
+            printf("{\"%s\":\"CHARACTER_TYPE\"}",NodeName[t->nodeIdentifier]);
+            return;
+        } else if (t->nodeIdentifier == TYPE_VALUE && t->item == INTEGER_TYPE) {
+            printf("{\"%s\":\"INTEGER_TYPE\"}",NodeName[t->nodeIdentifier]);
+            return;
+        } else if (t->nodeIdentifier == TYPE_VALUE && t->item == REAL_TYPE) {
+            printf("{\"%s\":\"REAL_TYPE\"}",NodeName[t->nodeIdentifier]);
+            return;
         } else if (t->nodeIdentifier == PROGRAM || t->nodeIdentifier == IDENTIFIER_LIST || t->nodeIdentifier == ASSIGNMENT_STATEMENT || t->nodeIdentifier == FOR_STATEMENT || t->nodeIdentifier == READ_STATEMENT || t->nodeIdentifier == IDENTIFIER_LIST) {
             printf("{\"%s\":\"%s\",\"children\":[",NodeName[t->nodeIdentifier],symTab[t->item]->identifier);
         } else if (t->nodeIdentifier == NUMBER_VALUE){
@@ -406,12 +415,6 @@ void PrintTree(TERNARY_TREE t)
     } else {
         printf("{\"%s\":\"NOTHING\",\"children\":[",NodeName[t->nodeIdentifier]);
     }
-    /* if (t->nodeIdentifier < 0 || t->nodeIdentifier > sizeof(NodeName)){
-        printf(" Unknown nodeIdentifier: %d\n",t->nodeIdentifier);
-    } else {
-        printf(" nodeIdentifier: %s\n",NodeName[t->nodeIdentifier]);
-    } */
-    /* printf("{\"%s\":\"%d\",\"children\":[",NodeName[t->nodeIdentifier],t->item); */
     PrintTree(t->first);
     printf(",");
     PrintTree(t->second);
@@ -419,17 +422,5 @@ void PrintTree(TERNARY_TREE t)
     PrintTree(t->third);
     printf("]}");
 }
-
-/* void PrintTree(TERNARY_TREE t,char space)
-{
-    space += COUNT;
-    if (t == NULL) return;
-    PrintTree(t->first,space);
-    for (int i = COUNT; i < space; i++)
-		printf(" ");
-    printf("%s\n",NodeName[t->nodeIdentifier]);
-    PrintTree(t->second,space);
-    PrintTree(t->third,space);
-} */
 
 #include "lex.yy.c"
