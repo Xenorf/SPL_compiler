@@ -70,7 +70,7 @@ OF           RETURN(keyword,OF);
 "."          RETURN(separator,PERIOD);
 ","          RETURN(separator,COMMA);
 ";"          RETURN(separator,SEMICOLON);
-{character}  RETURN(character,CHARACTER);
+{character}  RETURN_ID(character,CHARACTER);
 {id}         RETURN_ID(identifier,IDENTIFIER);
 {number}     RETURN_NUMBER(decimal_number,NUMBER)
 

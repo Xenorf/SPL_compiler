@@ -931,7 +931,7 @@ RETURN(separator,SEMICOLON);
 case 46:
 YY_RULE_SETUP
 #line 73 "spl.l"
-RETURN(character,CHARACTER);
+RETURN_ID(character,CHARACTER);
 	YY_BREAK
 case 47:
 YY_RULE_SETUP

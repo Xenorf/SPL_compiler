@@ -33,6 +33,7 @@ void yyerror (char *);
   enum ParseTreeNodeType { PROGRAM, BLOCK, DECLARATION_BLOCK, IDENTIFIER_LIST, TYPE_VALUE, STATEMENT_LIST, STATEMENT, ASSIGNMENT_STATEMENT, IF_STATEMENT, DO_STATEMENT, WHILE_STATEMENT, FOR_STATEMENT, WRITE_STATEMENT, READ_STATEMENT, OUTPUT_LIST, CONDITIONAL, COMPARATOR, EXPRESSION, TERM, VALUE, CONSTANT, CHARACTER_CONSTANT, NUMBER_CONSTANT, INTEGER, IDENTIFIER_VALUE, NUMBER_VALUE } ;  
                           /* Add more types here, as more nodes
                                            added to tree */
+  char *NodeName[] = {"PROGRAM", "BLOCK", "DECLARATION_BLOCK", "IDENTIFIER_LIST", "TYPE_VALUE", "STATEMENT_LIST", "STATEMENT", "ASSIGNMENT_STATEMENT", "IF_STATEMENT", "DO_STATEMENT", "WHILE_STATEMENT", "FOR_STATEMENT", "WRITE_STATEMENT", "READ_STATEMENT", "OUTPUT_LIST", "CONDITIONAL", "COMPARATOR", "EXPRESSION", "TERM", "VALUE", "CONSTANT", "CHARACTER_CONSTANT", "NUMBER_CONSTANT", "INTEGER", "IDENTIFIER_VALUE", "NUMBER_VALUE"} ;
 
 #ifndef TRUE
 #define TRUE 1
@@ -94,12 +95,11 @@ int currentSymTabSize = 0;
     TERNARY_TREE  tVal;
 }
 
-%token ENDP DECLARATIONS CODE TYPE CHARACTER_TYPE INTEGER_TYPE REAL_TYPE IF THEN ENDIF ELSE DO WHILE ENDDO ENDWHILE FOR IS BY TO ENDFOR WRITE NEWLINE READ NOT AND OR OF GREATER_THAN_OR_EQUAL LESS_THAN_OR_EQUAL NOT_EQUAL LESS_THAN GREATER_THAN EQUAL ASSIGNEMENT MINUS PLUS TIMES DIVIDE BRA KET COLON PERIOD COMMA SEMICOLON CHARACTER
-%token<iVal> IDENTIFIER NUMBER
+%token ENDP DECLARATIONS CODE TYPE CHARACTER_TYPE INTEGER_TYPE REAL_TYPE IF THEN ENDIF ELSE DO WHILE ENDDO ENDWHILE FOR IS BY TO ENDFOR WRITE NEWLINE READ NOT AND OR OF GREATER_THAN_OR_EQUAL LESS_THAN_OR_EQUAL NOT_EQUAL LESS_THAN GREATER_THAN EQUAL ASSIGNEMENT MINUS PLUS TIMES DIVIDE BRA KET COLON PERIOD COMMA SEMICOLON
+%token<iVal> IDENTIFIER NUMBER CHARACTER
 %type<tVal> program block declaration_block identifier_list type statement_list statement assignment_statement if_statement do_statement while_statement for_statement write_statement read_statement output_list conditional comparator expression term value constant character_constant number_constant integer
-%type<iVal> identifier number
 %%
-program : identifier COLON block ENDP identifier PERIOD
+program : IDENTIFIER COLON block ENDP IDENTIFIER PERIOD
     {       
         TERNARY_TREE ParseTree;
         ParseTree = create_node($1,PROGRAM,$3,NULL,NULL);
@@ -124,11 +124,11 @@ declaration_block : identifier_list OF TYPE type SEMICOLON
         $$ = create_node(NOTHING,DECLARATION_BLOCK,$1,$4,$6);
     }
     ;
-identifier_list : identifier
+identifier_list : IDENTIFIER
     {
-        $$ = create_node($1,IDENTIFIER_LIST,NULL,NULL,NULL);//is it good to pass identifier like this ?
+        $$ = create_node($1,IDENTIFIER_VALUE,NULL,NULL,NULL);
     }
-    | identifier_list COMMA identifier
+    | identifier_list COMMA IDENTIFIER
     {
         $$ = create_node($3,IDENTIFIER_LIST,$1,NULL,NULL);
     }
@@ -184,7 +184,7 @@ statement : assignment_statement
         $$ = create_node(NOTHING,STATEMENT,$1,NULL,NULL);
     }
     ;
-assignment_statement : expression ASSIGNEMENT identifier
+assignment_statement : expression ASSIGNEMENT IDENTIFIER
     {
         $$ = create_node($3,ASSIGNMENT_STATEMENT,$1,NULL,NULL);
     }
@@ -208,9 +208,9 @@ while_statement : WHILE conditional DO statement_list ENDWHILE
         $$ = create_node(NOTHING,WHILE_STATEMENT,$2,$4,NULL);
     }
     ;
-for_statement : FOR identifier IS expression BY expression TO expression DO statement_list ENDFOR
+for_statement : FOR IDENTIFIER IS expression BY expression TO expression DO statement_list ENDFOR
     {
-        $$ = create_node($2,FOR_STATEMENT,create_node(NOTHING,FOR_STATEMENT,$4,$6,$8),$10,NULL);
+        $$ = create_node($2,FOR_STATEMENT,create_node($2,FOR_STATEMENT,$4,$6,$8),$10,NULL);
     }
     ;
 write_statement : WRITE BRA output_list KET
@@ -222,7 +222,7 @@ write_statement : WRITE BRA output_list KET
         $$ = create_node(NEWLINE,WRITE_STATEMENT,NULL,NULL,NULL);
     }
     ;
-read_statement : READ BRA identifier KET
+read_statement : READ BRA IDENTIFIER KET
     {
         $$ = create_node($3,READ_STATEMENT,NULL,NULL,NULL);
     }
@@ -304,9 +304,9 @@ term : value
         $$ = create_node(NOTHING,TERM,$1,$3,NULL);
     }
     ;
-value : identifier
+value : IDENTIFIER
     {
-        $$ = create_node($1,VALUE,NULL,NULL,NULL);
+        $$ = create_node($1,IDENTIFIER_VALUE,NULL,NULL,NULL);
     }
     | constant
     {
@@ -328,7 +328,7 @@ constant : character_constant
     ;
 character_constant : CHARACTER
     {
-        $$ = create_node(CHARACTER,CHARACTER_CONSTANT,NULL,NULL,NULL);
+        $$ = create_node($1,CHARACTER_CONSTANT,NULL,NULL,NULL);
     }
     ;
 number_constant : MINUS integer
@@ -348,21 +348,11 @@ number_constant : MINUS integer
         $$ = create_node(NOTHING,NUMBER_CONSTANT,$1,NULL,NULL);
     }
     ;
-integer : integer number
+integer : integer NUMBER
     {
         $$ = create_node($2,INTEGER,$1,NULL,NULL);
     }
-    | number
-    {
-        $$ = create_node($1,INTEGER,NULL,NULL,NULL);
-    }
-    ;
-identifier : IDENTIFIER
-    {
-        $$ = create_node($1,IDENTIFIER_VALUE,NULL,NULL,NULL);
-    }
-    ;
-number : NUMBER
+    | NUMBER
     {
         $$ = create_node($1,NUMBER_VALUE,NULL,NULL,NULL);
     }
@@ -390,12 +380,56 @@ TERNARY_TREE create_node(int ival, int case_identifier, TERNARY_TREE p1,
 
 void PrintTree(TERNARY_TREE t)
 {
-   if (t == NULL) return;
-   printf("Item: %d", t->item);
-   printf(" nodeIdentifier: %d\n",t->nodeIdentifier);
-   PrintTree(t->first);
-   PrintTree(t->second);
-   PrintTree(t->third);
+    if (t == NULL) {
+        /* printf("\"NULL\""); */
+        printf("\"NULL\"");
+        return;
+    }
+    if (t->item != NOTHING) {
+        if (t->item == NEWLINE) {
+            printf("{\"%s\":\"NEWLINE\"}",NodeName[t->nodeIdentifier]);
+            return;
+        } else if (t->nodeIdentifier == IDENTIFIER_VALUE) {
+            printf("{\"%s\":\"%s\"}",NodeName[t->nodeIdentifier],symTab[t->item]->identifier);
+            return;
+        } else if (t->nodeIdentifier == PROGRAM || t->nodeIdentifier == IDENTIFIER_LIST || t->nodeIdentifier == ASSIGNMENT_STATEMENT || t->nodeIdentifier == FOR_STATEMENT || t->nodeIdentifier == READ_STATEMENT || t->nodeIdentifier == IDENTIFIER_LIST) {
+            printf("{\"%s\":\"%s\",\"children\":[",NodeName[t->nodeIdentifier],symTab[t->item]->identifier);
+        } else if (t->nodeIdentifier == NUMBER_VALUE){
+            printf("{\"%s\":\"%d\"}",NodeName[t->nodeIdentifier],t->item);
+            return;
+        } else if (t->nodeIdentifier == CHARACTER_CONSTANT) {
+            printf("{\"%s\":\"%s\"}",NodeName[t->nodeIdentifier],symTab[t->item]->identifier);
+            return;
+        } else {
+            printf("{\"%s\":\"%d\",\"children\":[",NodeName[t->nodeIdentifier],t->item);
+        }
+    } else {
+        printf("{\"%s\":\"NOTHING\",\"children\":[",NodeName[t->nodeIdentifier]);
+    }
+    /* if (t->nodeIdentifier < 0 || t->nodeIdentifier > sizeof(NodeName)){
+        printf(" Unknown nodeIdentifier: %d\n",t->nodeIdentifier);
+    } else {
+        printf(" nodeIdentifier: %s\n",NodeName[t->nodeIdentifier]);
+    } */
+    /* printf("{\"%s\":\"%d\",\"children\":[",NodeName[t->nodeIdentifier],t->item); */
+    PrintTree(t->first);
+    printf(",");
+    PrintTree(t->second);
+    printf(",");
+    PrintTree(t->third);
+    printf("]}");
 }
+
+/* void PrintTree(TERNARY_TREE t,char space)
+{
+    space += COUNT;
+    if (t == NULL) return;
+    PrintTree(t->first,space);
+    for (int i = COUNT; i < space; i++)
+		printf(" ");
+    printf("%s\n",NodeName[t->nodeIdentifier]);
+    PrintTree(t->second,space);
+    PrintTree(t->third,space);
+} */
 
 #include "lex.yy.c"
