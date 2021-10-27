@@ -2256,6 +2256,24 @@ void PrintTree(TERNARY_TREE t)
         } else if (t->nodeIdentifier == TYPE_VALUE && t->item == REAL_TYPE) {
             printf("{\"%s\":\"REAL_TYPE\"}",NodeName[t->nodeIdentifier]);
             return;
+        } else if (t->nodeIdentifier == COMPARATOR && t->item == EQUAL) {
+            printf("{\"%s\":\"=\"}",NodeName[t->nodeIdentifier]);
+            return;
+        } else if (t->nodeIdentifier == COMPARATOR && t->item == NOT_EQUAL) {
+            printf("{\"%s\":\"<>\"}",NodeName[t->nodeIdentifier]);
+            return;
+        } else if (t->nodeIdentifier == COMPARATOR && t->item == GREATER_THAN) {
+            printf("{\"%s\":\">\"}",NodeName[t->nodeIdentifier]);
+            return;
+        } else if (t->nodeIdentifier == COMPARATOR && t->item == LESS_THAN) {
+            printf("{\"%s\":\"<\"}",NodeName[t->nodeIdentifier]);
+            return;
+        } else if (t->nodeIdentifier == COMPARATOR && t->item == LESS_THAN_OR_EQUAL) {
+            printf("{\"%s\":\"<=\"}",NodeName[t->nodeIdentifier]);
+            return;
+        } else if (t->nodeIdentifier == COMPARATOR && t->item == GREATER_THAN_OR_EQUAL) {
+            printf("{\"%s\":\">=\"}",NodeName[t->nodeIdentifier]);
+            return;
         } else if (t->nodeIdentifier == PROGRAM || t->nodeIdentifier == IDENTIFIER_LIST || t->nodeIdentifier == ASSIGNMENT_STATEMENT || t->nodeIdentifier == FOR_STATEMENT || t->nodeIdentifier == READ_STATEMENT || t->nodeIdentifier == IDENTIFIER_LIST) {
             printf("{\"%s\":\"%s\",\"children\":[",NodeName[t->nodeIdentifier],symTab[t->item]->identifier);
         } else if (t->nodeIdentifier == NUMBER_VALUE){
