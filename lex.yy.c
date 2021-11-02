@@ -945,7 +945,7 @@ RETURN_NUMBER(decimal_number,NUMBER)
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 77 "spl.l"
+#line 76 "spl.l"
 ECHO;
 	YY_BREAK
 #line 952 "lex.yy.c"
@@ -1838,7 +1838,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 77 "spl.l"
+#line 76 "spl.l"
 
 #include <string.h>
 #ifndef PRINT
@@ -1847,8 +1847,6 @@ int main()
 /* code for a simple symbol table, which is an array of pointers to
    structs, each of which contains an identifier.
 */
-
-
 SYMTABNODEPTR newSymTabNode()
 {
     return ((SYMTABNODEPTR)malloc(sizeof(SYMTABNODE)));

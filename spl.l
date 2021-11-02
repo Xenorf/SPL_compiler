@@ -73,7 +73,6 @@ OF           RETURN(keyword,OF);
 {character}  RETURN_ID(character,CHARACTER);
 {id}         RETURN_ID(identifier,IDENTIFIER);
 {number}     RETURN_NUMBER(decimal_number,NUMBER)
-
 %%
 #include <string.h>
 #ifndef PRINT
@@ -82,8 +81,6 @@ OF           RETURN(keyword,OF);
 /* code for a simple symbol table, which is an array of pointers to
    structs, each of which contains an identifier.
 */
-
-
 SYMTABNODEPTR newSymTabNode()
 {
     return ((SYMTABNODEPTR)malloc(sizeof(SYMTABNODE)));

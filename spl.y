@@ -20,19 +20,14 @@
 int yylex (void);
 void yyerror (char *);
 
-/* 
-   Some constants.
-*/
+/* Some constants.*/
 
-  /* These constants are used later in the code */
 #define SYMTABSIZE     50
 #define IDLENGTH       15
 #define NOTHING        -1
-#define INDENTOFFSET    2
 
   enum ParseTreeNodeType { PROGRAM, BLOCK, DECLARATION_BLOCK, IDENTIFIER_LIST, TYPE_VALUE, STATEMENT_LIST, STATEMENT, ASSIGNMENT_STATEMENT, IF_STATEMENT, DO_STATEMENT, WHILE_STATEMENT, FOR_STATEMENT, WRITE_STATEMENT, READ_STATEMENT, OUTPUT_LIST, CONDITIONAL, COMPARATOR, EXPRESSION, TERM, VALUE, CONSTANT, CHARACTER_CONSTANT, NUMBER_CONSTANT, INTEGER, IDENTIFIER_VALUE, NUMBER_VALUE } ;  
-                          /* Add more types here, as more nodes
-                                           added to tree */
+
   char *NodeName[] = {"PROGRAM", "BLOCK", "DECLARATION_BLOCK", "IDENTIFIER_LIST", "TYPE_VALUE", "STATEMENT_LIST", "STATEMENT", "ASSIGNMENT_STATEMENT", "IF_STATEMENT", "DO_STATEMENT", "WHILE_STATEMENT", "FOR_STATEMENT", "WRITE_STATEMENT", "READ_STATEMENT", "OUTPUT_LIST", "CONDITIONAL", "COMPARATOR", "EXPRESSION", "TERM", "VALUE", "CONSTANT", "CHARACTER_CONSTANT", "NUMBER_CONSTANT", "INTEGER", "IDENTIFIER_VALUE", "NUMBER_VALUE"} ;
 
 #ifndef TRUE
@@ -58,12 +53,13 @@ struct treeNode {
   };
 
 typedef  struct treeNode TREE_NODE;
-typedef  TREE_NODE        *TERNARY_TREE;
+typedef  TREE_NODE *TERNARY_TREE;
 
 /* ------------- forward declarations --------------------------- */
 
 TERNARY_TREE create_node(int,int,TERNARY_TREE,TERNARY_TREE,TERNARY_TREE);
 void PrintTree(TERNARY_TREE);
+void GenerateCode(TERNARY_TREE);
 
 /* ------------- symbol table definition --------------------------- */
 
@@ -80,15 +76,7 @@ int currentSymTabSize = 0;
 
 %}
 
-/****************/
-/* Start symbol */
-/****************/
-
 %start  program
-
-/**********************/
-/* Action value types */
-/**********************/
 
 %union {
     int iVal;
@@ -103,7 +91,12 @@ program : IDENTIFIER COLON block ENDP IDENTIFIER PERIOD
     {       
         TERNARY_TREE ParseTree;
         ParseTree = create_node($1,PROGRAM,$3,NULL,NULL);
+        #ifdef PRINTTREE
         PrintTree(ParseTree);
+        #endif
+        #ifdef GENCODE
+        GenerateCode(ParseTree);
+        #endif
     }
     ;
 block : DECLARATIONS declaration_block CODE statement_list
@@ -240,7 +233,7 @@ conditional : NOT conditional
     {
         $$ = create_node(NOTHING,CONDITIONAL,$2,NULL,NULL);
     }
-    | expression comparator expression AND conditional//how ? more than 3
+    | expression comparator expression AND conditional
     {
         $$ = create_node(NOTHING,CONDITIONAL,create_node(NOTHING,CONDITIONAL,$1,$2,$3),$5,NULL);
     }
@@ -381,7 +374,6 @@ TERNARY_TREE create_node(int ival, int case_identifier, TERNARY_TREE p1,
 void PrintTree(TERNARY_TREE t)
 {
     if (t == NULL) {
-        /* printf("\"NULL\""); */
         printf("\"NULL\"");
         return;
     }
@@ -439,6 +431,70 @@ void PrintTree(TERNARY_TREE t)
     printf(",");
     PrintTree(t->third);
     printf("]}");
+}
+
+void GenerateCode(TERNARY_TREE t)
+{
+    switch(t->nodeIdentifier){
+        case PROGRAM:
+        printf("#include <stdio.h>\nint main() {\n");
+        GenerateCode(t->first);
+        printf("return 0;\n}\n");
+        break;
+
+        case BLOCK:
+        GenerateCode(t->first);
+        break;
+
+        case STATEMENT_LIST:
+        if (t->second == NULL) {
+            GenerateCode(t->first);
+        } else {
+            GenerateCode(t->first);
+            GenerateCode(t->second);
+        }
+        break;
+
+        case STATEMENT:
+        GenerateCode(t->first);
+        break;
+
+        case WRITE_STATEMENT:
+        if (t->item == NEWLINE) {
+            printf("printf(\"\\n\");\n");
+        }
+        else {
+            printf("printf(\"");
+            GenerateCode(t->first);
+            printf("\");\n");
+            
+        }
+        break;
+
+        case OUTPUT_LIST:
+        if (t->second == NULL) {
+            GenerateCode(t->first);
+        } else {
+            GenerateCode(t->first);
+            GenerateCode(t->second);
+        }
+        break;
+
+        case VALUE:
+        GenerateCode(t->first);
+        break;
+
+        case CONSTANT:
+        GenerateCode(t->first);
+        break;
+
+        case CHARACTER_CONSTANT: ;
+        char *p = symTab[t->item]->identifier;
+        p[2] = 0;
+        p++;
+        printf("%s",p);
+        break;
+    }
 }
 
 #include "lex.yy.c"
