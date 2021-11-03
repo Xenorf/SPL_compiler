@@ -15,6 +15,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
 
 /* make forward declarations to avoid compiler warnings */
 int yylex (void);
@@ -24,7 +26,9 @@ void yyerror (char *);
 
 #define SYMTABSIZE     50
 #define IDLENGTH       15
+#define TYPELENGTH     15
 #define NOTHING        -1
+#define DEST_SIZE 40
 
   enum ParseTreeNodeType { PROGRAM, BLOCK, DECLARATION_BLOCK, IDENTIFIER_LIST, TYPE_VALUE, STATEMENT_LIST, STATEMENT, ASSIGNMENT_STATEMENT, IF_STATEMENT, DO_STATEMENT, WHILE_STATEMENT, FOR_STATEMENT, WRITE_STATEMENT, READ_STATEMENT, OUTPUT_LIST, CONDITIONAL, COMPARATOR, EXPRESSION, TERM, VALUE, CONSTANT, CHARACTER_CONSTANT, NUMBER_CONSTANT, INTEGER, IDENTIFIER_VALUE, NUMBER_VALUE } ;  
 
@@ -59,12 +63,14 @@ typedef  TREE_NODE *TERNARY_TREE;
 
 TERNARY_TREE create_node(int,int,TERNARY_TREE,TERNARY_TREE,TERNARY_TREE);
 void PrintTree(TERNARY_TREE);
-void GenerateCode(TERNARY_TREE);
+char* GenerateCode(TERNARY_TREE);
+int isNumber(char[]);
 
 /* ------------- symbol table definition --------------------------- */
 
 struct symTabNode {
     char identifier[IDLENGTH];
+    char type[TYPELENGTH];
 };
 
 typedef  struct symTabNode SYMTABNODE;
@@ -73,6 +79,8 @@ typedef  SYMTABNODE        *SYMTABNODEPTR;
 SYMTABNODEPTR  symTab[SYMTABSIZE]; 
 
 int currentSymTabSize = 0;
+char* currentType;
+int inDeclarationBlock = 0;
 
 %}
 
@@ -85,7 +93,7 @@ int currentSymTabSize = 0;
 
 %token ENDP DECLARATIONS CODE TYPE CHARACTER_TYPE INTEGER_TYPE REAL_TYPE IF THEN ENDIF ELSE DO WHILE ENDDO ENDWHILE FOR IS BY TO ENDFOR WRITE NEWLINE READ NOT AND OR OF GREATER_THAN_OR_EQUAL LESS_THAN_OR_EQUAL NOT_EQUAL LESS_THAN GREATER_THAN EQUAL ASSIGNEMENT MINUS PLUS TIMES DIVIDE BRA KET COLON PERIOD COMMA SEMICOLON
 %token<iVal> IDENTIFIER NUMBER CHARACTER
-%type<tVal> program block declaration_block identifier_list type statement_list statement assignment_statement if_statement do_statement while_statement for_statement write_statement read_statement output_list conditional comparator expression term value constant character_constant number_constant integer
+%type<tVal> program block declaration_block identifier_list type statement_list statement assignment_statement if_statement do_statement while_statement for_statement write_statement read_statement output_list conditional comparator expression term value constant number_constant integer
 %%
 program : IDENTIFIER COLON block ENDP IDENTIFIER PERIOD
     {       
@@ -231,15 +239,15 @@ output_list : value
     ;
 conditional : NOT conditional
     {
-        $$ = create_node(NOTHING,CONDITIONAL,$2,NULL,NULL);
+        $$ = create_node(NOT,CONDITIONAL,$2,NULL,NULL);
     }
     | expression comparator expression AND conditional
     {
-        $$ = create_node(NOTHING,CONDITIONAL,create_node(NOTHING,CONDITIONAL,$1,$2,$3),$5,NULL);
+        $$ = create_node(AND,CONDITIONAL,create_node(NOTHING,CONDITIONAL,$1,$2,$3),$5,NULL);
     }
     | expression comparator expression OR conditional//how ? more than 3
     {
-        $$ = create_node(NOTHING,CONDITIONAL,create_node(NOTHING,CONDITIONAL,$1,$2,$3),$5,NULL);
+        $$ = create_node(OR,CONDITIONAL,create_node(NOTHING,CONDITIONAL,$1,$2,$3),$5,NULL);
     }
     | expression comparator expression
     {
@@ -277,11 +285,11 @@ expression : term
     }
     | expression PLUS term
     {
-        $$ = create_node(NOTHING,EXPRESSION,$1,$3,NULL);
+        $$ = create_node(PLUS,EXPRESSION,$1,$3,NULL);
     }
     | expression MINUS term 
     {
-        $$ = create_node(NOTHING,EXPRESSION,$1,$3,NULL);
+        $$ = create_node(MINUS,EXPRESSION,$1,$3,NULL);
     }
     ;
 term : value
@@ -290,11 +298,11 @@ term : value
     }
     | term TIMES value
     {
-        $$ = create_node(NOTHING,TERM,$1,$3,NULL);
+        $$ = create_node(TIMES,TERM,$1,$3,NULL);
     }
     | term DIVIDE value
     {
-        $$ = create_node(NOTHING,TERM,$1,$3,NULL);
+        $$ = create_node(DIVIDE,TERM,$1,$3,NULL);
     }
     ;
 value : IDENTIFIER
@@ -310,31 +318,26 @@ value : IDENTIFIER
         $$ = create_node(NOTHING,VALUE,$2,NULL,NULL);
     }
     ;
-constant : character_constant
+constant : CHARACTER
     {
-        $$ = create_node(NOTHING,CONSTANT,$1,NULL,NULL);
+        $$ = create_node($1,CHARACTER_CONSTANT,NULL,NULL,NULL);
     }
     | number_constant
     {
         $$ = create_node(NOTHING,CONSTANT,$1,NULL,NULL);
     }
     ;
-character_constant : CHARACTER
-    {
-        $$ = create_node($1,CHARACTER_CONSTANT,NULL,NULL,NULL);
-    }
-    ;
 number_constant : MINUS integer
     {
-        $$ = create_node(NOTHING,NUMBER_CONSTANT,$2,NULL,NULL);
+        $$ = create_node(MINUS,NUMBER_CONSTANT,$2,NULL,NULL);
     }
     | MINUS integer PERIOD integer
     {
-        $$ = create_node(NOTHING,NUMBER_CONSTANT,$2,$4,NULL);
+        $$ = create_node(MINUS+PERIOD,NUMBER_CONSTANT,$2,$4,NULL);
     }
     | integer PERIOD integer
     {
-        $$ = create_node(NOTHING,NUMBER_CONSTANT,$1,$3,NULL);
+        $$ = create_node(PERIOD,NUMBER_CONSTANT,$1,$3,NULL);
     }
     | integer
     {
@@ -433,7 +436,17 @@ void PrintTree(TERNARY_TREE t)
     printf("]}");
 }
 
-void GenerateCode(TERNARY_TREE t)
+int isNumber(char s[])
+{
+    for (int i = 0; s[i]!= '\0'; i++)
+    {
+        if (isdigit(s[i]) == 0)
+              return 0;
+    }
+    return 1;
+}
+
+char* GenerateCode(TERNARY_TREE t)
 {
     switch(t->nodeIdentifier){
         case PROGRAM:
@@ -443,7 +456,67 @@ void GenerateCode(TERNARY_TREE t)
         break;
 
         case BLOCK:
+        if (t->second == NULL) {
+            GenerateCode(t->first);
+        } else {
+            GenerateCode(t->first);
+            GenerateCode(t->second);
+        }
+        break;
+
+        case DECLARATION_BLOCK: ;
+        inDeclarationBlock = 1;
+        char *myDeclaration = malloc (sizeof (char) * DEST_SIZE);
+        GenerateCode(t->second);
+        myDeclaration = GenerateCode(t->first);
+        if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
+            strcpy(myDeclaration,symTab[t->first->item]->identifier);
+            /* strcpy(symTab[t->first->item]->type, currentType); */
+        }
+        printf("%s;\n",myDeclaration);
+        if (t->third != NULL) {
+            GenerateCode(t->third);
+        }
+        inDeclarationBlock = 0;
+        break;
+
+        case TYPE_VALUE:
+        if (t->item == CHARACTER_TYPE) {
+            currentType = "CHAR";
+            printf("char ");
+        } else if (t->item == INTEGER_TYPE) {
+            currentType = "INT";
+            printf("int ");
+        } else if (t->item == REAL_TYPE) {
+            currentType = "FLOAT";
+            printf("float ");
+        }
+        break;
+
+        case IDENTIFIER_VALUE: ;
+        if (inDeclarationBlock) {
+            strcpy(symTab[t->item]->type, currentType);
+        }
+        int length = snprintf( NULL, 0, "%d", t->item );
+        char* myIdentifier = malloc( length + 1 );
+        snprintf( myIdentifier, length + 1, "%d", t->item );
+        /* printf("%s",symTab[t->item]->type); */
+        return myIdentifier;
+        break;
+
+        case IDENTIFIER_LIST: ; //archi clean (à voir avec le type)
+        if (inDeclarationBlock) {
+            strcpy(symTab[t->item]->type, currentType);
+        }
+        char *myIdentifierList = malloc (sizeof (char) * DEST_SIZE);
+        if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
+            strcpy(myIdentifierList,symTab[t->first->item]->identifier);
+        }
         GenerateCode(t->first);
+        strcat(myIdentifierList,",");
+        strcat(myIdentifierList,symTab[t->item]->identifier);
+        /* printf("%s",symTab[t->item]->type); */
+        return myIdentifierList;
         break;
 
         case STATEMENT_LIST:
@@ -459,40 +532,168 @@ void GenerateCode(TERNARY_TREE t)
         GenerateCode(t->first);
         break;
 
+        case READ_STATEMENT:
+        /* printf("%s",symTab[t->item]->type); */
+        if (!strcmp(symTab[t->item]->type,"INT")) {
+            printf("scanf(\"%%d\", &%s);\n",symTab[t->item]->identifier);
+        } else if (!strcmp(symTab[t->item]->type,"FLOAT")) {
+            printf("scanf(\"%%f\", &%s);\n",symTab[t->item]->identifier);
+        } else if (!strcmp(symTab[t->item]->type,"CHAR")) { //problème sur la def de char seul qui ne passe pas
+            printf("scanf(\" %%c\", &%s);\n",symTab[t->item]->identifier);
+        }
+        break;
+
+        case ASSIGNMENT_STATEMENT:
+        printf("%s = ",symTab[t->item]->identifier);
+        GenerateCode(t->first);
+        printf(";\n");
+        break;
+
+        case EXPRESSION:
+        GenerateCode(t->first);
+        if (t->item == PLUS) {
+            printf(" + ");
+            GenerateCode(t->second);
+        } else if (t->item == MINUS) {
+            printf(" - ");
+            GenerateCode(t->second);
+        }
+        break;
+
+        case TERM:
+        if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
+            printf("%s",symTab[t->first->item]->identifier);
+        } else {
+            GenerateCode(t->first);
+        }
+        if (t->item == TIMES) {
+            printf(" * ");
+        } else if (t->item == DIVIDE) {
+            printf(" / ");
+        }
+        if (t->item != NOTHING) {
+            if (t->second->nodeIdentifier == IDENTIFIER_VALUE) {
+                printf("%s",symTab[t->second->item]->identifier);
+            } else {
+                GenerateCode(t->second);
+            }
+        }
+        break;
+
         case WRITE_STATEMENT:
         if (t->item == NEWLINE) {
             printf("printf(\"\\n\");\n");
         }
         else {
-            printf("printf(\"");
-            GenerateCode(t->first);
-            printf("\");\n");
-            
+            char* myWriteStatement = GenerateCode(t->first);
+            if (!isNumber(myWriteStatement)) 
+                printf("printf(\"%%s\",\"%s\");\n",myWriteStatement);
+
         }
         break;
 
-        case OUTPUT_LIST:
-        if (t->second == NULL) {
+        case IF_STATEMENT:
+        if (t->third == NULL) {
+            printf("if (");
             GenerateCode(t->first);
+            printf("){\n");
+            GenerateCode(t->second);
+            printf("}\n");
+        }
+        else {
+            printf("if (");
+            GenerateCode(t->first);
+            printf("){\n");
+            GenerateCode(t->second);
+            printf("} else {\n");
+            GenerateCode(t->third);
+            printf("}\n");
+        }
+        break;
+
+        case OUTPUT_LIST: ;
+        char *myOutputList = malloc (sizeof (char) * DEST_SIZE);
+        strcpy(myOutputList,GenerateCode(t->first));
+        if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
+            if (!strcmp(symTab[t->first->item]->type,"INT")) {
+                printf("printf(\"%%d\", %s);\n",symTab[t->first->item]->identifier);
+            } else if (!strcmp(symTab[t->first->item]->type,"FLOAT")) {
+                printf("printf(\"%%f\", %s);\n",symTab[t->first->item]->identifier);
+            } else if (!strcmp(symTab[t->first->item]->type,"CHAR")) { //problème sur la def de char seul qui ne passe pas
+                printf("printf(\"%%c\", %s);\n",symTab[t->first->item]->identifier);
+            }
+        }
+        if (t->second != NULL) {
+            strcat(myOutputList,GenerateCode(t->second));
+        } else {
+            return myOutputList;
+        }
+        break;
+
+        case CONDITIONAL:
+        if (t->item == NOT) {
+            printf("!");
+            GenerateCode(t->first);
+        } else if (t->item == AND) {
+            GenerateCode(t->first);
+            printf(" && ");
+            GenerateCode(t->second);
+        } else if (t->item == OR) {
+            GenerateCode(t->first);
+            printf(" || ");
+            GenerateCode(t->second);
         } else {
             GenerateCode(t->first);
+            GenerateCode(t->second);
+            GenerateCode(t->third);
+        }
+        break;
+
+        case COMPARATOR:
+        if (t->item == EQUAL) {
+            printf(" == ");
+        } else if (t->item == NOT_EQUAL) {
+            printf(" != ");
+        } else if (t->item == LESS_THAN) {
+            printf(" < ");
+        } else if (t->item == GREATER_THAN) {
+            printf(" > ");
+        } else if (t->item == GREATER_THAN_OR_EQUAL) {
+            printf(" >= ");
+        } else if (t->item == LESS_THAN_OR_EQUAL) {
+            printf(" <= ");
+        }
+        break;
+
+        case VALUE: ;
+        char* myValue = GenerateCode(t->first);
+        return myValue;
+        break;
+
+        case CONSTANT: ;
+        char* myConstant = GenerateCode(t->first);
+        return myConstant;
+        break;
+
+        case CHARACTER_CONSTANT:
+        /* char *p = symTab[t->item]->identifier;
+        p[2] = 0;
+        p++;
+        printf("%s",p); */
+        /* printf("%s",symTab[t->item]->identifier); */
+        return symTab[t->item]->identifier;
+        break;
+
+        case NUMBER_CONSTANT: ;
+        if (t->item == PERIOD) {
+            GenerateCode(t->first);
+            printf(".");
             GenerateCode(t->second);
         }
         break;
 
-        case VALUE:
-        GenerateCode(t->first);
-        break;
-
-        case CONSTANT:
-        GenerateCode(t->first);
-        break;
-
-        case CHARACTER_CONSTANT: ;
-        char *p = symTab[t->item]->identifier;
-        p[2] = 0;
-        p++;
-        printf("%s",p);
+        case NUMBER_VALUE: ;
+        printf("%d",t->item);
         break;
     }
 }

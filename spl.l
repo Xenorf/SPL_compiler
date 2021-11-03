@@ -6,6 +6,7 @@
 #else
 #define RETURN(typearg,token) return(token);
 #define RETURN_ID(typearg,token) yylval.iVal = installId(yytext); return(token);
+#define RETURN_CHAR(typearg,token) yytext[2] = 0; yylval.iVal = installId(yytext+1); return(token);
 #define RETURN_NUMBER(typearg,token) yylval.iVal = atoi(yytext); return(token);
 #endif
 #ifndef PRINT
@@ -17,7 +18,7 @@ extern int currentSymTabSize;
 int installId(char *);
 #endif
 %}
-delim        [ \t\n]
+delim        [ \t\n\r]
 ws           {delim}+
 letter       [a-zA-Z]
 digit        [0-9]
@@ -70,7 +71,7 @@ OF           RETURN(keyword,OF);
 "."          RETURN(separator,PERIOD);
 ","          RETURN(separator,COMMA);
 ";"          RETURN(separator,SEMICOLON);
-{character}  RETURN_ID(character,CHARACTER);
+{character}  RETURN_CHAR(character,CHARACTER);
 {id}         RETURN_ID(identifier,IDENTIFIER);
 {number}     RETURN_NUMBER(decimal_number,NUMBER)
 %%

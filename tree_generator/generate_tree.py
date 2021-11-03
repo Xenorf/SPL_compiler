@@ -28,7 +28,7 @@ def get_leafs(treedict, parent=None,parent_nb=0,parent_value=0) :
     if parent is not None:
         leafs.append((parent+str(parent_nb), name+str(child_nb),parent_value))
     if "children" in treedict.keys() :
-        for j in range(1,len(treedict["children"])) :
+        for j in range(1,len(treedict["children"])+1) :
             get_leafs(treedict["children"][j-1],parent = name,parent_nb=child_nb,parent_value=parent_value)
 
 # Printing the matrix in an understandable way for Graphviz
