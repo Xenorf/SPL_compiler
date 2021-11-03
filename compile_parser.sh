@@ -21,7 +21,7 @@ elif [ "$run" = false ] && [ "$mode" = -DGENCODE ]; then
     ./parser < test_programs/${testprogram}.spl
 elif [ "$run" = true ] && [ "$mode" = -DPRINTTREE ]; then
     ./parser < test_programs/${testprogram}.spl > tree_generator/output
-    python3 tree_generator/generate_tree.py | dot -Tpng -otree_generator/tree.png
+    python3 tree_generator/generate_tree.py | dot -Tpng -otree_generator/tree_${testprogram}.png
 elif [ "$run" = true ] && [ "$mode" = -DGENCODE ]; then
     ./parser < test_programs/${testprogram}.spl > code_generated/${testprogram}.c
     gcc code_generated/${testprogram}.c -o code_generated/${testprogram}.out

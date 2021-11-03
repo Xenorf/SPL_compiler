@@ -137,7 +137,7 @@ char* GenerateCode(TERNARY_TREE);
 
 struct symTabNode {
     char identifier[IDLENGTH];
-    char type[TYPELENGTH];
+    char type;
 };
 
 typedef  struct symTabNode SYMTABNODE;
@@ -146,7 +146,7 @@ typedef  SYMTABNODE        *SYMTABNODEPTR;
 SYMTABNODEPTR  symTab[SYMTABSIZE]; 
 
 int currentSymTabSize = 0;
-char* currentType;
+char currentType;
 int inDeclarationBlock = 0;
 
 
@@ -2329,20 +2329,20 @@ char* GenerateCode(TERNARY_TREE t)
 
         case TYPE_VALUE:
         if (t->item == CHARACTER_TYPE) {
-            currentType = "CHAR";
+            currentType = 'c';
             printf("char ");
         } else if (t->item == INTEGER_TYPE) {
-            currentType = "INT";
+            currentType = 'd';
             printf("int ");
         } else if (t->item == REAL_TYPE) {
-            currentType = "FLOAT";
+            currentType = 'f';
             printf("float ");
         }
         break;
 
         case IDENTIFIER_VALUE: ;
         if (inDeclarationBlock) {
-            strcpy(symTab[t->item]->type, currentType);
+            symTab[t->item]->type = currentType;
         }
         int length = snprintf( NULL, 0, "%d", t->item );
         char* myIdentifier = malloc( length + 1 );
@@ -2352,7 +2352,7 @@ char* GenerateCode(TERNARY_TREE t)
 
         case IDENTIFIER_LIST: ;
         if (inDeclarationBlock) {//define type when we are in the declaration block
-            strcpy(symTab[t->item]->type, currentType);
+            symTab[t->item]->type = currentType;
         }
         char *myIdentifierList = malloc (sizeof (char) * DEST_SIZE);
         if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
@@ -2378,11 +2378,11 @@ char* GenerateCode(TERNARY_TREE t)
         break;
 
         case READ_STATEMENT:
-        if (!strcmp(symTab[t->item]->type,"INT")) {
+        if (symTab[t->item]->type=='d') {
             printf("scanf(\"%%d\", &%s);\n",symTab[t->item]->identifier);
-        } else if (!strcmp(symTab[t->item]->type,"FLOAT")) {
+        } else if (symTab[t->item]->type=='f') {
             printf("scanf(\"%%f\", &%s);\n",symTab[t->item]->identifier);
-        } else if (!strcmp(symTab[t->item]->type,"CHAR")) {
+        } else if (symTab[t->item]->type=='c') {
             printf("scanf(\" %%c\", &%s);\n",symTab[t->item]->identifier);
         }
         break;
@@ -2459,11 +2459,11 @@ char* GenerateCode(TERNARY_TREE t)
         char *myOutputList = malloc (sizeof (char) * DEST_SIZE);
         strcpy(myOutputList,GenerateCode(t->first));
         if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
-            if (!strcmp(symTab[t->first->item]->type,"INT")) {
+            if (symTab[t->first->item]->type=='d') {
                 printf("printf(\"%%d\", %s);\n",symTab[t->first->item]->identifier);
-            } else if (!strcmp(symTab[t->first->item]->type,"FLOAT")) {
+            } else if (symTab[t->first->item]->type=='f') {
                 printf("printf(\"%%f\", %s);\n",symTab[t->first->item]->identifier);
-            } else if (!strcmp(symTab[t->first->item]->type,"CHAR")) { //problème sur la def de char seul qui ne passe pas
+            } else if (symTab[t->first->item]->type=='c') { //problème sur la def de char seul qui ne passe pas
                 printf("printf(\"%%c\", %s);\n",symTab[t->first->item]->identifier);
             }
             return 0;
