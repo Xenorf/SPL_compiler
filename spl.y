@@ -15,7 +15,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
 #include <string.h>
 
 /* make forward declarations to avoid compiler warnings */
@@ -64,7 +63,6 @@ typedef  TREE_NODE *TERNARY_TREE;
 TERNARY_TREE create_node(int,int,TERNARY_TREE,TERNARY_TREE,TERNARY_TREE);
 void PrintTree(TERNARY_TREE);
 char* GenerateCode(TERNARY_TREE);
-int isNumber(char[]);
 
 /* ------------- symbol table definition --------------------------- */
 
@@ -436,16 +434,6 @@ void PrintTree(TERNARY_TREE t)
     printf("]}");
 }
 
-int isNumber(char s[])
-{
-    for (int i = 0; s[i]!= '\0'; i++)
-    {
-        if (isdigit(s[i]) == 0)
-              return 0;
-    }
-    return 1;
-}
-
 char* GenerateCode(TERNARY_TREE t)
 {
     switch(t->nodeIdentifier){
@@ -471,7 +459,6 @@ char* GenerateCode(TERNARY_TREE t)
         myDeclaration = GenerateCode(t->first);
         if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
             strcpy(myDeclaration,symTab[t->first->item]->identifier);
-            /* strcpy(symTab[t->first->item]->type, currentType); */
         }
         printf("%s;\n",myDeclaration);
         if (t->third != NULL) {
@@ -500,12 +487,11 @@ char* GenerateCode(TERNARY_TREE t)
         int length = snprintf( NULL, 0, "%d", t->item );
         char* myIdentifier = malloc( length + 1 );
         snprintf( myIdentifier, length + 1, "%d", t->item );
-        /* printf("%s",symTab[t->item]->type); */
         return myIdentifier;
         break;
 
-        case IDENTIFIER_LIST: ; //archi clean (à voir avec le type)
-        if (inDeclarationBlock) {
+        case IDENTIFIER_LIST: ;
+        if (inDeclarationBlock) {//define type when we are in the declaration block
             strcpy(symTab[t->item]->type, currentType);
         }
         char *myIdentifierList = malloc (sizeof (char) * DEST_SIZE);
@@ -515,7 +501,6 @@ char* GenerateCode(TERNARY_TREE t)
         GenerateCode(t->first);
         strcat(myIdentifierList,",");
         strcat(myIdentifierList,symTab[t->item]->identifier);
-        /* printf("%s",symTab[t->item]->type); */
         return myIdentifierList;
         break;
 
@@ -533,12 +518,11 @@ char* GenerateCode(TERNARY_TREE t)
         break;
 
         case READ_STATEMENT:
-        /* printf("%s",symTab[t->item]->type); */
         if (!strcmp(symTab[t->item]->type,"INT")) {
             printf("scanf(\"%%d\", &%s);\n",symTab[t->item]->identifier);
         } else if (!strcmp(symTab[t->item]->type,"FLOAT")) {
             printf("scanf(\"%%f\", &%s);\n",symTab[t->item]->identifier);
-        } else if (!strcmp(symTab[t->item]->type,"CHAR")) { //problème sur la def de char seul qui ne passe pas
+        } else if (!strcmp(symTab[t->item]->type,"CHAR")) {
             printf("scanf(\" %%c\", &%s);\n",symTab[t->item]->identifier);
         }
         break;
@@ -586,7 +570,7 @@ char* GenerateCode(TERNARY_TREE t)
         }
         else {
             char* myWriteStatement = GenerateCode(t->first);
-            if (!isNumber(myWriteStatement)) 
+            if (myWriteStatement!=0) 
                 printf("printf(\"%%s\",\"%s\");\n",myWriteStatement);
 
         }
@@ -622,6 +606,7 @@ char* GenerateCode(TERNARY_TREE t)
             } else if (!strcmp(symTab[t->first->item]->type,"CHAR")) { //problème sur la def de char seul qui ne passe pas
                 printf("printf(\"%%c\", %s);\n",symTab[t->first->item]->identifier);
             }
+            return 0;
         }
         if (t->second != NULL) {
             strcat(myOutputList,GenerateCode(t->second));
@@ -676,11 +661,6 @@ char* GenerateCode(TERNARY_TREE t)
         break;
 
         case CHARACTER_CONSTANT:
-        /* char *p = symTab[t->item]->identifier;
-        p[2] = 0;
-        p++;
-        printf("%s",p); */
-        /* printf("%s",symTab[t->item]->identifier); */
         return symTab[t->item]->identifier;
         break;
 
