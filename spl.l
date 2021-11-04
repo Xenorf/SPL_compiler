@@ -73,9 +73,10 @@ OF           RETURN(keyword,OF);
 ";"          RETURN(separator,SEMICOLON);
 {character}  RETURN_CHAR(character,CHARACTER);
 {id}         RETURN_ID(identifier,IDENTIFIER);
-{number}     RETURN_NUMBER(decimal_number,NUMBER)
+{number}     RETURN_NUMBER(decimal_number,NUMBER);
+.            printf("Unexpected symbol in the lexer %s",yytext);
+
 %%
-#include <string.h>
 #ifndef PRINT
 /* Here is the code for the library of symbol table routines */
 

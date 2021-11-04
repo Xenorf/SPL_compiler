@@ -371,7 +371,7 @@ TERNARY_TREE create_node(int ival, int case_identifier, TERNARY_TREE p1,
     t->third = p3;
     return (t);
 }
-
+#ifdef PRINTTREE
 void PrintTree(TERNARY_TREE t)
 {
     if (t == NULL) {
@@ -433,7 +433,9 @@ void PrintTree(TERNARY_TREE t)
     PrintTree(t->third);
     printf("]}");
 }
+#endif
 
+#ifdef GENCODE
 char* GenerateCode(TERNARY_TREE t)
 {
     switch(t->nodeIdentifier){
@@ -496,11 +498,14 @@ char* GenerateCode(TERNARY_TREE t)
         }
         char *myIdentifierList = malloc (sizeof (char) * DEST_SIZE);
         if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
+            GenerateCode(t->first);
             strcpy(myIdentifierList,symTab[t->first->item]->identifier);
+        } else {
+            myIdentifierList = GenerateCode(t->first);
         }
-        GenerateCode(t->first);
         strcat(myIdentifierList,",");
         strcat(myIdentifierList,symTab[t->item]->identifier);
+        
         return myIdentifierList;
         break;
 
@@ -518,13 +523,7 @@ char* GenerateCode(TERNARY_TREE t)
         break;
 
         case READ_STATEMENT:
-        if (symTab[t->item]->type=='d') {
-            printf("scanf(\"%%d\", &%s);\n",symTab[t->item]->identifier);
-        } else if (symTab[t->item]->type=='f') {
-            printf("scanf(\"%%f\", &%s);\n",symTab[t->item]->identifier);
-        } else if (symTab[t->item]->type=='c') {
-            printf("scanf(\" %%c\", &%s);\n",symTab[t->item]->identifier);
-        }
+        printf("scanf(\" %%%c\", &%s);\n",symTab[t->item]->type,symTab[t->item]->identifier);
         break;
 
         case ASSIGNMENT_STATEMENT:
@@ -599,13 +598,7 @@ char* GenerateCode(TERNARY_TREE t)
         char *myOutputList = malloc (sizeof (char) * DEST_SIZE);
         strcpy(myOutputList,GenerateCode(t->first));
         if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
-            if (symTab[t->first->item]->type=='d') {
-                printf("printf(\"%%d\", %s);\n",symTab[t->first->item]->identifier);
-            } else if (symTab[t->first->item]->type=='f') {
-                printf("printf(\"%%f\", %s);\n",symTab[t->first->item]->identifier);
-            } else if (symTab[t->first->item]->type=='c') {
-                printf("printf(\"%%c\", %s);\n",symTab[t->first->item]->identifier);
-            }
+            printf("printf(\"%%%c\", %s);\n",symTab[t->first->item]->type,symTab[t->first->item]->identifier);
             return 0;
         }
         if (t->second != NULL) {
@@ -669,6 +662,11 @@ char* GenerateCode(TERNARY_TREE t)
             GenerateCode(t->first);
             printf(".");
             GenerateCode(t->second);
+        } else if (t->item == PERIOD+MINUS) {
+            printf("-");
+            GenerateCode(t->first);
+            printf(".");
+            GenerateCode(t->second);
         }
         break;
 
@@ -677,5 +675,6 @@ char* GenerateCode(TERNARY_TREE t)
         break;
     }
 }
+#endif
 
 #include "lex.yy.c"
