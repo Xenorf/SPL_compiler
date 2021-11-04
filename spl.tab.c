@@ -148,10 +148,9 @@ SYMTABNODEPTR  symTab[SYMTABSIZE];
 int currentSymTabSize = 0;
 char currentType;
 int inDeclarationBlock = 0;
-int inWriteStatement = 0;
 
 
-#line 155 "spl.tab.c"
+#line 154 "spl.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -250,12 +249,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 88 "spl.y"
+#line 87 "spl.y"
 
     int iVal;
     TERNARY_TREE  tVal;
 
-#line 259 "spl.tab.c"
+#line 258 "spl.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -635,12 +634,12 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    97,    97,   109,   113,   118,   122,   127,   131,   136,
-     140,   144,   149,   153,   158,   162,   166,   170,   174,   178,
-     182,   187,   192,   196,   201,   206,   211,   216,   220,   225,
-     230,   234,   239,   243,   247,   251,   256,   260,   264,   268,
-     272,   276,   281,   285,   289,   294,   298,   302,   307,   311,
-     315,   320,   324,   329,   333,   337,   341,   346
+       0,    96,    96,   108,   112,   117,   121,   126,   130,   135,
+     139,   143,   148,   152,   157,   161,   165,   169,   173,   177,
+     181,   186,   191,   195,   200,   205,   210,   215,   219,   224,
+     229,   233,   238,   242,   246,   250,   255,   259,   263,   267,
+     271,   275,   280,   284,   288,   293,   297,   301,   306,   310,
+     314,   319,   323,   328,   332,   336,   340,   345
 };
 #endif
 
@@ -1514,7 +1513,7 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 98 "spl.y"
+#line 97 "spl.y"
     {       
         TERNARY_TREE ParseTree;
         ParseTree = create_node((yyvsp[-5].iVal),PROGRAM,(yyvsp[-3].tVal),NULL,NULL);
@@ -1525,451 +1524,451 @@ yyreduce:
         GenerateCode(ParseTree);
         #endif
     }
-#line 1529 "spl.tab.c"
+#line 1528 "spl.tab.c"
     break;
 
   case 3:
-#line 110 "spl.y"
+#line 109 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,BLOCK,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1537 "spl.tab.c"
+#line 1536 "spl.tab.c"
     break;
 
   case 4:
-#line 114 "spl.y"
+#line 113 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,BLOCK,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1545 "spl.tab.c"
+#line 1544 "spl.tab.c"
     break;
 
   case 5:
-#line 119 "spl.y"
+#line 118 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,DECLARATION_BLOCK,(yyvsp[-4].tVal),(yyvsp[-1].tVal),NULL);
     }
-#line 1553 "spl.tab.c"
+#line 1552 "spl.tab.c"
     break;
 
   case 6:
-#line 123 "spl.y"
+#line 122 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,DECLARATION_BLOCK,(yyvsp[-5].tVal),(yyvsp[-2].tVal),(yyvsp[0].tVal));
     }
-#line 1561 "spl.tab.c"
+#line 1560 "spl.tab.c"
     break;
 
   case 7:
-#line 128 "spl.y"
+#line 127 "spl.y"
     {
         (yyval.tVal) = create_node((yyvsp[0].iVal),IDENTIFIER_VALUE,NULL,NULL,NULL);
     }
-#line 1569 "spl.tab.c"
+#line 1568 "spl.tab.c"
     break;
 
   case 8:
-#line 132 "spl.y"
+#line 131 "spl.y"
     {
         (yyval.tVal) = create_node((yyvsp[0].iVal),IDENTIFIER_LIST,(yyvsp[-2].tVal),NULL,NULL);
     }
-#line 1577 "spl.tab.c"
+#line 1576 "spl.tab.c"
     break;
 
   case 9:
-#line 137 "spl.y"
+#line 136 "spl.y"
     {
         (yyval.tVal) = create_node(CHARACTER_TYPE,TYPE_VALUE,NULL,NULL,NULL);
     }
-#line 1585 "spl.tab.c"
+#line 1584 "spl.tab.c"
     break;
 
   case 10:
-#line 141 "spl.y"
+#line 140 "spl.y"
     {
         (yyval.tVal) = create_node(INTEGER_TYPE,TYPE_VALUE,NULL,NULL,NULL);
     }
-#line 1593 "spl.tab.c"
+#line 1592 "spl.tab.c"
     break;
 
   case 11:
-#line 145 "spl.y"
+#line 144 "spl.y"
     {
         (yyval.tVal) = create_node(REAL_TYPE,TYPE_VALUE,NULL,NULL,NULL);
     }
-#line 1601 "spl.tab.c"
+#line 1600 "spl.tab.c"
     break;
 
   case 12:
-#line 150 "spl.y"
+#line 149 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT_LIST,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1609 "spl.tab.c"
+#line 1608 "spl.tab.c"
     break;
 
   case 13:
-#line 154 "spl.y"
+#line 153 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT_LIST,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1617 "spl.tab.c"
+#line 1616 "spl.tab.c"
     break;
 
   case 14:
-#line 159 "spl.y"
+#line 158 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1625 "spl.tab.c"
+#line 1624 "spl.tab.c"
     break;
 
   case 15:
-#line 163 "spl.y"
+#line 162 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1633 "spl.tab.c"
+#line 1632 "spl.tab.c"
     break;
 
   case 16:
-#line 167 "spl.y"
+#line 166 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1641 "spl.tab.c"
+#line 1640 "spl.tab.c"
     break;
 
   case 17:
-#line 171 "spl.y"
+#line 170 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1649 "spl.tab.c"
+#line 1648 "spl.tab.c"
     break;
 
   case 18:
-#line 175 "spl.y"
+#line 174 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1657 "spl.tab.c"
+#line 1656 "spl.tab.c"
     break;
 
   case 19:
-#line 179 "spl.y"
+#line 178 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1665 "spl.tab.c"
+#line 1664 "spl.tab.c"
     break;
 
   case 20:
-#line 183 "spl.y"
+#line 182 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1673 "spl.tab.c"
+#line 1672 "spl.tab.c"
     break;
 
   case 21:
-#line 188 "spl.y"
+#line 187 "spl.y"
     {
         (yyval.tVal) = create_node((yyvsp[0].iVal),ASSIGNMENT_STATEMENT,(yyvsp[-2].tVal),NULL,NULL);
     }
-#line 1681 "spl.tab.c"
+#line 1680 "spl.tab.c"
     break;
 
   case 22:
-#line 193 "spl.y"
+#line 192 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,IF_STATEMENT,(yyvsp[-3].tVal),(yyvsp[-1].tVal),NULL);
     }
-#line 1689 "spl.tab.c"
+#line 1688 "spl.tab.c"
     break;
 
   case 23:
-#line 197 "spl.y"
+#line 196 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,IF_STATEMENT,(yyvsp[-5].tVal),(yyvsp[-3].tVal),(yyvsp[-1].tVal));
     }
-#line 1697 "spl.tab.c"
+#line 1696 "spl.tab.c"
     break;
 
   case 24:
-#line 202 "spl.y"
+#line 201 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,DO_STATEMENT,(yyvsp[-3].tVal),(yyvsp[-1].tVal),NULL);
     }
-#line 1705 "spl.tab.c"
+#line 1704 "spl.tab.c"
     break;
 
   case 25:
-#line 207 "spl.y"
+#line 206 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,WHILE_STATEMENT,(yyvsp[-3].tVal),(yyvsp[-1].tVal),NULL);
     }
-#line 1713 "spl.tab.c"
+#line 1712 "spl.tab.c"
     break;
 
   case 26:
-#line 212 "spl.y"
+#line 211 "spl.y"
     {
         (yyval.tVal) = create_node((yyvsp[-9].iVal),FOR_STATEMENT,(yyvsp[-7].tVal),create_node((yyvsp[-9].iVal),FOR_STATEMENT,(yyvsp[-5].tVal),(yyvsp[-3].tVal),NULL),(yyvsp[-1].tVal));
     }
-#line 1721 "spl.tab.c"
+#line 1720 "spl.tab.c"
     break;
 
   case 27:
-#line 217 "spl.y"
+#line 216 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,WRITE_STATEMENT,(yyvsp[-1].tVal),NULL,NULL);
     }
-#line 1729 "spl.tab.c"
+#line 1728 "spl.tab.c"
     break;
 
   case 28:
-#line 221 "spl.y"
+#line 220 "spl.y"
     {
         (yyval.tVal) = create_node(NEWLINE,WRITE_STATEMENT,NULL,NULL,NULL);
     }
-#line 1737 "spl.tab.c"
+#line 1736 "spl.tab.c"
     break;
 
   case 29:
-#line 226 "spl.y"
+#line 225 "spl.y"
     {
         (yyval.tVal) = create_node((yyvsp[-1].iVal),READ_STATEMENT,NULL,NULL,NULL);
     }
-#line 1745 "spl.tab.c"
+#line 1744 "spl.tab.c"
     break;
 
   case 30:
-#line 231 "spl.y"
+#line 230 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,OUTPUT_LIST,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1753 "spl.tab.c"
+#line 1752 "spl.tab.c"
     break;
 
   case 31:
-#line 235 "spl.y"
+#line 234 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,OUTPUT_LIST,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1761 "spl.tab.c"
+#line 1760 "spl.tab.c"
     break;
 
   case 32:
-#line 240 "spl.y"
+#line 239 "spl.y"
     {
         (yyval.tVal) = create_node(NOT,CONDITIONAL,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1769 "spl.tab.c"
+#line 1768 "spl.tab.c"
     break;
 
   case 33:
-#line 244 "spl.y"
+#line 243 "spl.y"
     {
         (yyval.tVal) = create_node(AND,CONDITIONAL,create_node(NOTHING,CONDITIONAL,(yyvsp[-4].tVal),(yyvsp[-3].tVal),(yyvsp[-2].tVal)),(yyvsp[0].tVal),NULL);
     }
-#line 1777 "spl.tab.c"
+#line 1776 "spl.tab.c"
     break;
 
   case 34:
-#line 248 "spl.y"
+#line 247 "spl.y"
     {
         (yyval.tVal) = create_node(OR,CONDITIONAL,create_node(NOTHING,CONDITIONAL,(yyvsp[-4].tVal),(yyvsp[-3].tVal),(yyvsp[-2].tVal)),(yyvsp[0].tVal),NULL);
     }
-#line 1785 "spl.tab.c"
+#line 1784 "spl.tab.c"
     break;
 
   case 35:
-#line 252 "spl.y"
+#line 251 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,CONDITIONAL,(yyvsp[-2].tVal),(yyvsp[-1].tVal),(yyvsp[0].tVal));
     }
-#line 1793 "spl.tab.c"
+#line 1792 "spl.tab.c"
     break;
 
   case 36:
-#line 257 "spl.y"
+#line 256 "spl.y"
     {
         (yyval.tVal) = create_node(EQUAL,COMPARATOR,NULL,NULL,NULL);
     }
-#line 1801 "spl.tab.c"
+#line 1800 "spl.tab.c"
     break;
 
   case 37:
-#line 261 "spl.y"
+#line 260 "spl.y"
     {
         (yyval.tVal) = create_node(NOT_EQUAL,COMPARATOR,NULL,NULL,NULL);
     }
-#line 1809 "spl.tab.c"
+#line 1808 "spl.tab.c"
     break;
 
   case 38:
-#line 265 "spl.y"
+#line 264 "spl.y"
     {
         (yyval.tVal) = create_node(LESS_THAN,COMPARATOR,NULL,NULL,NULL);
     }
-#line 1817 "spl.tab.c"
+#line 1816 "spl.tab.c"
     break;
 
   case 39:
-#line 269 "spl.y"
+#line 268 "spl.y"
     {
         (yyval.tVal) = create_node(GREATER_THAN,COMPARATOR,NULL,NULL,NULL);
     }
-#line 1825 "spl.tab.c"
+#line 1824 "spl.tab.c"
     break;
 
   case 40:
-#line 273 "spl.y"
+#line 272 "spl.y"
     {
         (yyval.tVal) = create_node(GREATER_THAN_OR_EQUAL,COMPARATOR,NULL,NULL,NULL);
     }
-#line 1833 "spl.tab.c"
+#line 1832 "spl.tab.c"
     break;
 
   case 41:
-#line 277 "spl.y"
+#line 276 "spl.y"
     {
         (yyval.tVal) = create_node(LESS_THAN_OR_EQUAL,COMPARATOR,NULL,NULL,NULL);
     }
-#line 1841 "spl.tab.c"
+#line 1840 "spl.tab.c"
     break;
 
   case 42:
-#line 282 "spl.y"
+#line 281 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,EXPRESSION,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1849 "spl.tab.c"
+#line 1848 "spl.tab.c"
     break;
 
   case 43:
-#line 286 "spl.y"
+#line 285 "spl.y"
     {
         (yyval.tVal) = create_node(PLUS,EXPRESSION,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1857 "spl.tab.c"
+#line 1856 "spl.tab.c"
     break;
 
   case 44:
-#line 290 "spl.y"
+#line 289 "spl.y"
     {
         (yyval.tVal) = create_node(MINUS,EXPRESSION,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1865 "spl.tab.c"
+#line 1864 "spl.tab.c"
     break;
 
   case 45:
-#line 295 "spl.y"
+#line 294 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,TERM,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1873 "spl.tab.c"
+#line 1872 "spl.tab.c"
     break;
 
   case 46:
-#line 299 "spl.y"
+#line 298 "spl.y"
     {
         (yyval.tVal) = create_node(TIMES,TERM,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1881 "spl.tab.c"
+#line 1880 "spl.tab.c"
     break;
 
   case 47:
-#line 303 "spl.y"
+#line 302 "spl.y"
     {
         (yyval.tVal) = create_node(DIVIDE,TERM,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1889 "spl.tab.c"
+#line 1888 "spl.tab.c"
     break;
 
   case 48:
-#line 308 "spl.y"
+#line 307 "spl.y"
     {
         (yyval.tVal) = create_node((yyvsp[0].iVal),IDENTIFIER_VALUE,NULL,NULL,NULL);
     }
-#line 1897 "spl.tab.c"
+#line 1896 "spl.tab.c"
     break;
 
   case 49:
-#line 312 "spl.y"
+#line 311 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,VALUE,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1905 "spl.tab.c"
+#line 1904 "spl.tab.c"
     break;
 
   case 50:
-#line 316 "spl.y"
+#line 315 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,VALUE,(yyvsp[-1].tVal),NULL,NULL);
     }
-#line 1913 "spl.tab.c"
+#line 1912 "spl.tab.c"
     break;
 
   case 51:
-#line 321 "spl.y"
+#line 320 "spl.y"
     {
         (yyval.tVal) = create_node((yyvsp[0].iVal),CHARACTER_CONSTANT,NULL,NULL,NULL);
     }
-#line 1921 "spl.tab.c"
+#line 1920 "spl.tab.c"
     break;
 
   case 52:
-#line 325 "spl.y"
+#line 324 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,CONSTANT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1929 "spl.tab.c"
+#line 1928 "spl.tab.c"
     break;
 
   case 53:
-#line 330 "spl.y"
+#line 329 "spl.y"
     {
         (yyval.tVal) = create_node(MINUS,NUMBER_CONSTANT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1937 "spl.tab.c"
+#line 1936 "spl.tab.c"
     break;
 
   case 54:
-#line 334 "spl.y"
+#line 333 "spl.y"
     {
         (yyval.tVal) = create_node(MINUS+PERIOD,NUMBER_CONSTANT,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1945 "spl.tab.c"
+#line 1944 "spl.tab.c"
     break;
 
   case 55:
-#line 338 "spl.y"
+#line 337 "spl.y"
     {
         (yyval.tVal) = create_node(PERIOD,NUMBER_CONSTANT,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1953 "spl.tab.c"
+#line 1952 "spl.tab.c"
     break;
 
   case 56:
-#line 342 "spl.y"
+#line 341 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,NUMBER_CONSTANT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1961 "spl.tab.c"
+#line 1960 "spl.tab.c"
     break;
 
   case 57:
-#line 347 "spl.y"
+#line 346 "spl.y"
     {
         (yyval.tVal) = create_node((yyvsp[0].iVal),NUMBER_VALUE,NULL,NULL,NULL);
     }
-#line 1969 "spl.tab.c"
+#line 1968 "spl.tab.c"
     break;
 
 
-#line 1973 "spl.tab.c"
+#line 1972 "spl.tab.c"
 
       default: break;
     }
@@ -2201,7 +2200,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 351 "spl.y"
+#line 350 "spl.y"
 
 
 /* Code for routines for managing the Parse Tree */
@@ -2402,9 +2401,9 @@ char* GenerateCode(TERNARY_TREE t)
             strcpy(myTerm,GenerateCode(t->first));
         }
         if (t->item == TIMES) {
-            strcat(myTerm,"*");
+            strcat(myTerm," * ");
         } else if (t->item == DIVIDE) {
-            strcat(myTerm,"/");
+            strcat(myTerm," / ");
         }
         if (t->item != NOTHING) {
             if (t->second->nodeIdentifier == IDENTIFIER_VALUE) {
@@ -2417,17 +2416,19 @@ char* GenerateCode(TERNARY_TREE t)
         break;
 
         case WRITE_STATEMENT:
-        inWriteStatement = 1;
         if (t->item == NEWLINE) {
             printf("printf(\"\\n\");\n");
         }
         else {
             char* myWriteStatement = GenerateCode(t->first);
-            if (myWriteStatement!=0) 
-                printf("printf(\"%%s\",\"%s\");\n",myWriteStatement);
-
+            if (myWriteStatement!=0){
+                if (strpbrk(myWriteStatement,"+-/*")){
+                    printf("printf(\"%%d\",(%s));\n",myWriteStatement);
+                } else {
+                    printf("printf(\"%%s\",\"%s\");\n",myWriteStatement);
+                }
+            }
         }
-        inWriteStatement = 0;
         break;
 
         case IF_STATEMENT:
@@ -2465,24 +2466,21 @@ char* GenerateCode(TERNARY_TREE t)
         printf(");\n");
         break;
 
-        case FOR_STATEMENT:
+        case FOR_STATEMENT: ;
+        char *isStatement = malloc (sizeof (char) * DEST_SIZE);
+        char *byStatement = malloc (sizeof (char) * DEST_SIZE);
+        char *toStatement = malloc (sizeof (char) * DEST_SIZE);
         if (t->third!=NULL) {
-            printf("for (%s=",symTab[t->item]->identifier);
-            GenerateCode(t->first);
-            printf(";");
+            isStatement=GenerateCode(t->first);
+            printf("for (%s=%s;",symTab[t->item]->identifier,isStatement);
             GenerateCode(t->second);
             printf("){\n");
             GenerateCode(t->third);
             printf("}\n");
         } else {
-            printf("(%s-(",symTab[t->item]->identifier);
-            GenerateCode(t->second);
-            printf("))*(");
-            GenerateCode(t->first);
-            printf("/abs(");
-            GenerateCode(t->first);
-            printf("))<=0;%s+=",symTab[t->item]->identifier);
-            GenerateCode(t->first);
+            byStatement = GenerateCode(t->first);
+            toStatement = GenerateCode(t->second);
+            printf("(%s-(%s))*(%s/abs(%s))<=0;%s+=%s",symTab[t->item]->identifier,toStatement,byStatement,byStatement,symTab[t->item]->identifier,byStatement);
         }
         break;
 
@@ -2491,8 +2489,6 @@ char* GenerateCode(TERNARY_TREE t)
         strcpy(myOutputList,GenerateCode(t->first));
         if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
             printf("printf(\"%%%c\", %s);\n",symTab[t->first->item]->type,symTab[t->first->item]->identifier);
-            return 0;
-        } else if (t->first->nodeIdentifier == EXPRESSION) {
             return 0;
         }
         if (t->second != NULL) {
@@ -2504,16 +2500,16 @@ char* GenerateCode(TERNARY_TREE t)
 
         case CONDITIONAL:
         if (t->item == AND) {
-            printf("%s",GenerateCode(t->first));
+            GenerateCode(t->first);
             printf(" && ");
-            printf("%s",GenerateCode(t->second));
+            GenerateCode(t->second);
         } else if (t->item == OR) {
-            printf("%s",GenerateCode(t->first));
+            GenerateCode(t->first);
             printf(" || ");
-            printf("%s",GenerateCode(t->second));
+            GenerateCode(t->second);
         } else if (t->item == NOT) {
             printf("!(");
-            printf("%s",GenerateCode(t->first));
+            GenerateCode(t->first);
             printf(")");
         } else {
             printf("%s",GenerateCode(t->first));

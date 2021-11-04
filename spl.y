@@ -79,7 +79,6 @@ SYMTABNODEPTR  symTab[SYMTABSIZE];
 int currentSymTabSize = 0;
 char currentType;
 int inDeclarationBlock = 0;
-int inWriteStatement = 0;
 
 %}
 
@@ -548,9 +547,9 @@ char* GenerateCode(TERNARY_TREE t)
             strcpy(myTerm,GenerateCode(t->first));
         }
         if (t->item == TIMES) {
-            strcat(myTerm,"*");
+            strcat(myTerm," * ");
         } else if (t->item == DIVIDE) {
-            strcat(myTerm,"/");
+            strcat(myTerm," / ");
         }
         if (t->item != NOTHING) {
             if (t->second->nodeIdentifier == IDENTIFIER_VALUE) {
@@ -563,17 +562,19 @@ char* GenerateCode(TERNARY_TREE t)
         break;
 
         case WRITE_STATEMENT:
-        inWriteStatement = 1;
         if (t->item == NEWLINE) {
             printf("printf(\"\\n\");\n");
         }
         else {
             char* myWriteStatement = GenerateCode(t->first);
-            if (myWriteStatement!=0) 
-                printf("printf(\"%%s\",\"%s\");\n",myWriteStatement);
-
+            if (myWriteStatement!=0){
+                if (strpbrk(myWriteStatement,"+-/*")){
+                    printf("printf(\"%%d\",(%s));\n",myWriteStatement);
+                } else {
+                    printf("printf(\"%%s\",\"%s\");\n",myWriteStatement);
+                }
+            }
         }
-        inWriteStatement = 0;
         break;
 
         case IF_STATEMENT:
@@ -611,24 +612,21 @@ char* GenerateCode(TERNARY_TREE t)
         printf(");\n");
         break;
 
-        case FOR_STATEMENT:
+        case FOR_STATEMENT: ;
+        char *isStatement = malloc (sizeof (char) * DEST_SIZE);
+        char *byStatement = malloc (sizeof (char) * DEST_SIZE);
+        char *toStatement = malloc (sizeof (char) * DEST_SIZE);
         if (t->third!=NULL) {
-            printf("for (%s=",symTab[t->item]->identifier);
-            GenerateCode(t->first);
-            printf(";");
+            isStatement=GenerateCode(t->first);
+            printf("for (%s=%s;",symTab[t->item]->identifier,isStatement);
             GenerateCode(t->second);
             printf("){\n");
             GenerateCode(t->third);
             printf("}\n");
         } else {
-            printf("(%s-(",symTab[t->item]->identifier);
-            GenerateCode(t->second);
-            printf("))*(");
-            GenerateCode(t->first);
-            printf("/abs(");
-            GenerateCode(t->first);
-            printf("))<=0;%s+=",symTab[t->item]->identifier);
-            GenerateCode(t->first);
+            byStatement = GenerateCode(t->first);
+            toStatement = GenerateCode(t->second);
+            printf("(%s-(%s))*(%s/abs(%s))<=0;%s+=%s",symTab[t->item]->identifier,toStatement,byStatement,byStatement,symTab[t->item]->identifier,byStatement);
         }
         break;
 
@@ -637,8 +635,6 @@ char* GenerateCode(TERNARY_TREE t)
         strcpy(myOutputList,GenerateCode(t->first));
         if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
             printf("printf(\"%%%c\", %s);\n",symTab[t->first->item]->type,symTab[t->first->item]->identifier);
-            return 0;
-        } else if (t->first->nodeIdentifier == EXPRESSION) {
             return 0;
         }
         if (t->second != NULL) {
@@ -650,16 +646,16 @@ char* GenerateCode(TERNARY_TREE t)
 
         case CONDITIONAL:
         if (t->item == AND) {
-            printf("%s",GenerateCode(t->first));
+            GenerateCode(t->first);
             printf(" && ");
-            printf("%s",GenerateCode(t->second));
+            GenerateCode(t->second);
         } else if (t->item == OR) {
-            printf("%s",GenerateCode(t->first));
+            GenerateCode(t->first);
             printf(" || ");
-            printf("%s",GenerateCode(t->second));
+            GenerateCode(t->second);
         } else if (t->item == NOT) {
             printf("!(");
-            printf("%s",GenerateCode(t->first));
+            GenerateCode(t->first);
             printf(")");
         } else {
             printf("%s",GenerateCode(t->first));
