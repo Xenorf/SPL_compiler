@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 int main() {
 int a,b;
 char c;
@@ -12,7 +13,7 @@ printf("%s","B");
 }
 printf("\n");
 scanf(" %f", &d);
-e = d * 2.3;
+e = d*2.3;
 printf("%f", e);
 printf("\n");
 scanf(" %c", &c);
