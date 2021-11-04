@@ -230,7 +230,7 @@ output_list : value
     {
         $$ = create_node(NOTHING,OUTPUT_LIST,$1,NULL,NULL);
     }
-    | output_list COMMA value
+    |  value COMMA output_list //ici j'ai fait un changement
     {
         $$ = create_node(NOTHING,OUTPUT_LIST,$1,$3,NULL);
     }
@@ -567,13 +567,46 @@ char* GenerateCode(TERNARY_TREE t)
         }
         else {
             char* myWriteStatement = GenerateCode(t->first);
-            if (myWriteStatement!=0){
+            /* if (myWriteStatement!=0){
                 if (strpbrk(myWriteStatement,"+-/*")){
                     printf("printf(\"%%d\",(%s));\n",myWriteStatement);
                 } else {
                     printf("printf(\"%%s\",\"%s\");\n",myWriteStatement);
                 }
-            }
+            } */
+        }
+        break;
+
+        /* case OUTPUT_LIST: ;
+        char *myOutputList = malloc (sizeof (char) * DEST_SIZE);
+        char *tempOutputList = malloc (sizeof (char) * DEST_SIZE);
+        strcpy(myOutputList,GenerateCode(t->first));
+
+
+
+        if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
+            printf("printf(\"%%%c\", %s);\n",symTab[t->first->item]->type,symTab[t->first->item]->identifier);
+            return 0;
+        }
+
+        if (t->second != NULL) {
+            tempOutputList = GenerateCode(t->second);
+            strcat(myOutputList,tempOutputList);
+        } else {
+            return myOutputList;
+        }
+        break; */
+
+        case OUTPUT_LIST:
+        if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
+            printf("printf(\"%%%c\", %s);\n",symTab[t->first->item]->type,symTab[t->first->item]->identifier);
+        } else if (strpbrk(GenerateCode(t->first),"+-/*")){
+            printf("printf(\"%%d\",(%s));\n",GenerateCode(t->first));
+        } else {
+            printf("printf(\"%%c\",\'%s\');\n",GenerateCode(t->first));
+        }
+        if (t->second != NULL) {
+            GenerateCode(t->second);
         }
         break;
 
@@ -627,20 +660,6 @@ char* GenerateCode(TERNARY_TREE t)
             byStatement = GenerateCode(t->first);
             toStatement = GenerateCode(t->second);
             printf("(%s-(%s))*(%s/abs(%s))<=0;%s+=%s",symTab[t->item]->identifier,toStatement,byStatement,byStatement,symTab[t->item]->identifier,byStatement);
-        }
-        break;
-
-        case OUTPUT_LIST: ;
-        char *myOutputList = malloc (sizeof (char) * DEST_SIZE);
-        strcpy(myOutputList,GenerateCode(t->first));
-        if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
-            printf("printf(\"%%%c\", %s);\n",symTab[t->first->item]->type,symTab[t->first->item]->identifier);
-            return 0;
-        }
-        if (t->second != NULL) {
-            strcat(myOutputList,GenerateCode(t->second));
-        } else {
-            return myOutputList;
         }
         break;
 
@@ -712,7 +731,6 @@ char* GenerateCode(TERNARY_TREE t)
             strcpy(myNumberConstant,GenerateCode(t->first));
         }
         return myNumberConstant;
-        printf("%s",myNumberConstant);
         break;
 
         case NUMBER_VALUE: ;

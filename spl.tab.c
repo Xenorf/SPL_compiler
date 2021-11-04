@@ -573,7 +573,7 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  4
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   129
+#define YYLAST   131
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  50
@@ -691,17 +691,17 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-     -46,   -30,    26,    46,   -47,   -18,     7,    31,   -47,    38,
-     -21,    32,     7,    32,   -10,     5,   -47,    25,    30,    23,
+     -46,   -30,    20,    46,   -47,   -24,     7,    26,   -47,    21,
+     -21,    32,     7,    32,   -13,     2,   -47,     5,    18,    23,
      -47,   -47,   -47,    40,   -47,   -47,   -47,   -47,   -47,   -47,
-     -47,   -47,    52,    58,   -47,   -47,   -47,    60,    67,     7,
-      99,    70,    32,   107,    78,    -1,   105,   101,    23,    74,
-      79,    45,     7,    75,    23,    23,    23,    23,    30,    80,
+     -47,   -47,    52,    58,   -47,   -47,   -47,    34,   -10,     7,
+      98,    67,    32,    94,    78,    -1,   103,    99,    23,    72,
+      76,    45,     7,    74,    23,    23,    23,    23,    18,    79,
       40,    85,   -47,   -47,     7,   -47,   -47,   -47,   -47,   -47,
-     -47,    23,    32,     7,    23,   -22,   -47,    83,    30,   -47,
+     -47,    23,    32,     7,    23,    80,    81,    82,    18,   -47,
      -47,   -47,    58,    58,   -47,   -47,   -47,   -47,   -47,   -47,
-     -47,    81,    -7,    47,   110,    11,    39,   -47,    23,   -47,
-     -47,   -18,   -47,     7,    32,    32,   -47,   -47,    23,   -47,
+     -47,    83,    -7,    47,   109,    11,    39,   -47,    23,   -47,
+     -47,   -24,   -47,     7,    32,    32,   -47,   -47,    23,   -47,
      -47,     3,   -47,   -47,    -2,   -47,    23,     4,     7,    -6,
      -47
 };
@@ -729,8 +729,8 @@ static const yytype_int8 yydefact[] =
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -47,   -47,   -47,    27,   -47,   -47,   -12,    77,   -47,   -47,
-     -47,   -47,   -47,   -47,   -47,   -47,    -4,   -47,    -9,    48,
+     -47,   -47,   -47,    27,   -47,   -47,   -12,    75,   -47,   -47,
+     -47,   -47,   -47,   -47,   -47,    33,    -4,   -47,    -9,    48,
      -45,   -47,   -47,   -11
 };
 
@@ -749,34 +749,36 @@ static const yytype_int8 yytable[] =
 {
       45,     1,    44,    76,    44,   102,   103,    50,    40,    46,
       51,    84,    85,     3,    72,   115,   120,    11,   118,   116,
-      97,    12,    13,    98,    41,    14,     4,    60,   107,     8,
-      15,    16,    17,    44,    38,    54,    55,    47,    63,    52,
-      52,    54,    55,    39,    18,    52,    48,    86,    19,    52,
-       5,     6,    92,   109,    20,    21,    22,    52,    42,   108,
-      18,    95,    93,    44,    19,    96,    49,   100,    94,    18,
-      20,    21,    22,    19,   104,   105,    54,    55,    21,    20,
+       4,    12,    13,     8,    41,    14,    39,    60,   107,    38,
+      15,    16,    17,    44,    47,    54,    55,    59,    63,    52,
+      52,    54,    55,    48,    18,    52,    49,    86,    19,    52,
+       5,     6,    92,    76,    20,    21,    22,    52,    42,   108,
+      18,    95,    93,    44,    19,    96,    21,   100,    94,    18,
+      20,    21,    22,    19,   104,   105,    54,    55,    58,    20,
       21,    22,    54,    55,    54,    55,    52,    79,    53,    54,
       55,   111,    88,    89,    90,    44,    44,    56,    57,   114,
-     112,   113,    82,    83,    58,    61,   119,   117,    65,    66,
-      67,    68,    69,    70,    59,    54,    55,    62,    64,    73,
-      74,    77,    81,    78,    87,    99,   106,   101,   110,    80
+     112,   113,    82,    83,    61,    64,   119,   117,    65,    66,
+      67,    68,    69,    70,    62,    54,    55,    73,    74,    77,
+      78,    81,    97,    87,    99,   106,    98,    80,   110,   101,
+       0,   109
 };
 
 static const yytype_int8 yycheck[] =
 {
       12,    47,    11,    48,    13,    12,    13,    18,    29,    13,
       19,    56,    57,    43,    15,    12,    22,    10,    14,    21,
-      42,    14,    15,    45,    45,    18,     0,    39,    17,    47,
-      23,    24,    25,    42,     3,    37,    38,    47,    42,    46,
-      46,    37,    38,     5,    37,    46,    41,    58,    41,    46,
+       0,    14,    15,    47,    45,    18,     5,    39,    17,     3,
+      23,    24,    25,    42,    47,    37,    38,    47,    42,    46,
+      46,    37,    38,    41,    37,    46,    41,    58,    41,    46,
        4,     5,    64,    98,    47,    48,    49,    46,    26,    20,
-      37,    73,    71,    72,    41,    74,    41,    78,    72,    37,
-      47,    48,    49,    41,    27,    28,    37,    38,    48,    47,
+      37,    73,    71,    72,    41,    74,    48,    78,    72,    37,
+      47,    48,    49,    41,    27,    28,    37,    38,    44,    47,
       48,    49,    37,    38,    37,    38,    46,    42,    36,    37,
       38,   103,     7,     8,     9,   104,   105,    39,    40,   108,
-     104,   105,    54,    55,    44,     6,   118,   116,    30,    31,
-      32,    33,    34,    35,    47,    37,    38,    47,    11,    14,
-      19,    47,    47,    44,    44,    42,    16,    46,   101,    52
+     104,   105,    54,    55,     6,    11,   118,   116,    30,    31,
+      32,    33,    34,    35,    47,    37,    38,    14,    19,    47,
+      44,    47,    42,    44,    42,    16,    45,    52,   101,    46,
+      -1,    98
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -793,7 +795,7 @@ static const yytype_int8 yystos[] =
       35,    67,    15,    14,    19,    65,    70,    47,    44,    42,
       57,    47,    69,    69,    70,    70,    73,    44,     7,     8,
        9,    55,    56,    68,    66,    56,    68,    42,    45,    42,
-      73,    46,    12,    13,    27,    28,    16,    17,    20,    70,
+      73,    46,    12,    13,    27,    28,    16,    17,    20,    65,
       53,    56,    66,    66,    68,    12,    21,    68,    14,    56,
       22
 };
@@ -1524,7 +1526,7 @@ yyreduce:
         GenerateCode(ParseTree);
         #endif
     }
-#line 1528 "spl.tab.c"
+#line 1530 "spl.tab.c"
     break;
 
   case 3:
@@ -1532,7 +1534,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,BLOCK,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1536 "spl.tab.c"
+#line 1538 "spl.tab.c"
     break;
 
   case 4:
@@ -1540,7 +1542,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,BLOCK,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1544 "spl.tab.c"
+#line 1546 "spl.tab.c"
     break;
 
   case 5:
@@ -1548,7 +1550,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,DECLARATION_BLOCK,(yyvsp[-4].tVal),(yyvsp[-1].tVal),NULL);
     }
-#line 1552 "spl.tab.c"
+#line 1554 "spl.tab.c"
     break;
 
   case 6:
@@ -1556,7 +1558,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,DECLARATION_BLOCK,(yyvsp[-5].tVal),(yyvsp[-2].tVal),(yyvsp[0].tVal));
     }
-#line 1560 "spl.tab.c"
+#line 1562 "spl.tab.c"
     break;
 
   case 7:
@@ -1564,7 +1566,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node((yyvsp[0].iVal),IDENTIFIER_VALUE,NULL,NULL,NULL);
     }
-#line 1568 "spl.tab.c"
+#line 1570 "spl.tab.c"
     break;
 
   case 8:
@@ -1572,7 +1574,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node((yyvsp[0].iVal),IDENTIFIER_LIST,(yyvsp[-2].tVal),NULL,NULL);
     }
-#line 1576 "spl.tab.c"
+#line 1578 "spl.tab.c"
     break;
 
   case 9:
@@ -1580,7 +1582,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(CHARACTER_TYPE,TYPE_VALUE,NULL,NULL,NULL);
     }
-#line 1584 "spl.tab.c"
+#line 1586 "spl.tab.c"
     break;
 
   case 10:
@@ -1588,7 +1590,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(INTEGER_TYPE,TYPE_VALUE,NULL,NULL,NULL);
     }
-#line 1592 "spl.tab.c"
+#line 1594 "spl.tab.c"
     break;
 
   case 11:
@@ -1596,7 +1598,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(REAL_TYPE,TYPE_VALUE,NULL,NULL,NULL);
     }
-#line 1600 "spl.tab.c"
+#line 1602 "spl.tab.c"
     break;
 
   case 12:
@@ -1604,7 +1606,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT_LIST,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1608 "spl.tab.c"
+#line 1610 "spl.tab.c"
     break;
 
   case 13:
@@ -1612,7 +1614,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT_LIST,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1616 "spl.tab.c"
+#line 1618 "spl.tab.c"
     break;
 
   case 14:
@@ -1620,7 +1622,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1624 "spl.tab.c"
+#line 1626 "spl.tab.c"
     break;
 
   case 15:
@@ -1628,7 +1630,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1632 "spl.tab.c"
+#line 1634 "spl.tab.c"
     break;
 
   case 16:
@@ -1636,7 +1638,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1640 "spl.tab.c"
+#line 1642 "spl.tab.c"
     break;
 
   case 17:
@@ -1644,7 +1646,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1648 "spl.tab.c"
+#line 1650 "spl.tab.c"
     break;
 
   case 18:
@@ -1652,7 +1654,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1656 "spl.tab.c"
+#line 1658 "spl.tab.c"
     break;
 
   case 19:
@@ -1660,7 +1662,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1664 "spl.tab.c"
+#line 1666 "spl.tab.c"
     break;
 
   case 20:
@@ -1668,7 +1670,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1672 "spl.tab.c"
+#line 1674 "spl.tab.c"
     break;
 
   case 21:
@@ -1676,7 +1678,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node((yyvsp[0].iVal),ASSIGNMENT_STATEMENT,(yyvsp[-2].tVal),NULL,NULL);
     }
-#line 1680 "spl.tab.c"
+#line 1682 "spl.tab.c"
     break;
 
   case 22:
@@ -1684,7 +1686,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,IF_STATEMENT,(yyvsp[-3].tVal),(yyvsp[-1].tVal),NULL);
     }
-#line 1688 "spl.tab.c"
+#line 1690 "spl.tab.c"
     break;
 
   case 23:
@@ -1692,7 +1694,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,IF_STATEMENT,(yyvsp[-5].tVal),(yyvsp[-3].tVal),(yyvsp[-1].tVal));
     }
-#line 1696 "spl.tab.c"
+#line 1698 "spl.tab.c"
     break;
 
   case 24:
@@ -1700,7 +1702,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,DO_STATEMENT,(yyvsp[-3].tVal),(yyvsp[-1].tVal),NULL);
     }
-#line 1704 "spl.tab.c"
+#line 1706 "spl.tab.c"
     break;
 
   case 25:
@@ -1708,7 +1710,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,WHILE_STATEMENT,(yyvsp[-3].tVal),(yyvsp[-1].tVal),NULL);
     }
-#line 1712 "spl.tab.c"
+#line 1714 "spl.tab.c"
     break;
 
   case 26:
@@ -1716,7 +1718,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node((yyvsp[-9].iVal),FOR_STATEMENT,(yyvsp[-7].tVal),create_node((yyvsp[-9].iVal),FOR_STATEMENT,(yyvsp[-5].tVal),(yyvsp[-3].tVal),NULL),(yyvsp[-1].tVal));
     }
-#line 1720 "spl.tab.c"
+#line 1722 "spl.tab.c"
     break;
 
   case 27:
@@ -1724,7 +1726,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,WRITE_STATEMENT,(yyvsp[-1].tVal),NULL,NULL);
     }
-#line 1728 "spl.tab.c"
+#line 1730 "spl.tab.c"
     break;
 
   case 28:
@@ -1732,7 +1734,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NEWLINE,WRITE_STATEMENT,NULL,NULL,NULL);
     }
-#line 1736 "spl.tab.c"
+#line 1738 "spl.tab.c"
     break;
 
   case 29:
@@ -1740,7 +1742,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node((yyvsp[-1].iVal),READ_STATEMENT,NULL,NULL,NULL);
     }
-#line 1744 "spl.tab.c"
+#line 1746 "spl.tab.c"
     break;
 
   case 30:
@@ -1748,7 +1750,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,OUTPUT_LIST,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1752 "spl.tab.c"
+#line 1754 "spl.tab.c"
     break;
 
   case 31:
@@ -1756,7 +1758,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,OUTPUT_LIST,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1760 "spl.tab.c"
+#line 1762 "spl.tab.c"
     break;
 
   case 32:
@@ -1764,7 +1766,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOT,CONDITIONAL,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1768 "spl.tab.c"
+#line 1770 "spl.tab.c"
     break;
 
   case 33:
@@ -1772,7 +1774,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(AND,CONDITIONAL,create_node(NOTHING,CONDITIONAL,(yyvsp[-4].tVal),(yyvsp[-3].tVal),(yyvsp[-2].tVal)),(yyvsp[0].tVal),NULL);
     }
-#line 1776 "spl.tab.c"
+#line 1778 "spl.tab.c"
     break;
 
   case 34:
@@ -1780,7 +1782,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(OR,CONDITIONAL,create_node(NOTHING,CONDITIONAL,(yyvsp[-4].tVal),(yyvsp[-3].tVal),(yyvsp[-2].tVal)),(yyvsp[0].tVal),NULL);
     }
-#line 1784 "spl.tab.c"
+#line 1786 "spl.tab.c"
     break;
 
   case 35:
@@ -1788,7 +1790,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,CONDITIONAL,(yyvsp[-2].tVal),(yyvsp[-1].tVal),(yyvsp[0].tVal));
     }
-#line 1792 "spl.tab.c"
+#line 1794 "spl.tab.c"
     break;
 
   case 36:
@@ -1796,7 +1798,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(EQUAL,COMPARATOR,NULL,NULL,NULL);
     }
-#line 1800 "spl.tab.c"
+#line 1802 "spl.tab.c"
     break;
 
   case 37:
@@ -1804,7 +1806,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOT_EQUAL,COMPARATOR,NULL,NULL,NULL);
     }
-#line 1808 "spl.tab.c"
+#line 1810 "spl.tab.c"
     break;
 
   case 38:
@@ -1812,7 +1814,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(LESS_THAN,COMPARATOR,NULL,NULL,NULL);
     }
-#line 1816 "spl.tab.c"
+#line 1818 "spl.tab.c"
     break;
 
   case 39:
@@ -1820,7 +1822,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(GREATER_THAN,COMPARATOR,NULL,NULL,NULL);
     }
-#line 1824 "spl.tab.c"
+#line 1826 "spl.tab.c"
     break;
 
   case 40:
@@ -1828,7 +1830,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(GREATER_THAN_OR_EQUAL,COMPARATOR,NULL,NULL,NULL);
     }
-#line 1832 "spl.tab.c"
+#line 1834 "spl.tab.c"
     break;
 
   case 41:
@@ -1836,7 +1838,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(LESS_THAN_OR_EQUAL,COMPARATOR,NULL,NULL,NULL);
     }
-#line 1840 "spl.tab.c"
+#line 1842 "spl.tab.c"
     break;
 
   case 42:
@@ -1844,7 +1846,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,EXPRESSION,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1848 "spl.tab.c"
+#line 1850 "spl.tab.c"
     break;
 
   case 43:
@@ -1852,7 +1854,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(PLUS,EXPRESSION,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1856 "spl.tab.c"
+#line 1858 "spl.tab.c"
     break;
 
   case 44:
@@ -1860,7 +1862,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(MINUS,EXPRESSION,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1864 "spl.tab.c"
+#line 1866 "spl.tab.c"
     break;
 
   case 45:
@@ -1868,7 +1870,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,TERM,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1872 "spl.tab.c"
+#line 1874 "spl.tab.c"
     break;
 
   case 46:
@@ -1876,7 +1878,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(TIMES,TERM,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1880 "spl.tab.c"
+#line 1882 "spl.tab.c"
     break;
 
   case 47:
@@ -1884,7 +1886,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(DIVIDE,TERM,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1888 "spl.tab.c"
+#line 1890 "spl.tab.c"
     break;
 
   case 48:
@@ -1892,7 +1894,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node((yyvsp[0].iVal),IDENTIFIER_VALUE,NULL,NULL,NULL);
     }
-#line 1896 "spl.tab.c"
+#line 1898 "spl.tab.c"
     break;
 
   case 49:
@@ -1900,7 +1902,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,VALUE,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1904 "spl.tab.c"
+#line 1906 "spl.tab.c"
     break;
 
   case 50:
@@ -1908,7 +1910,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,VALUE,(yyvsp[-1].tVal),NULL,NULL);
     }
-#line 1912 "spl.tab.c"
+#line 1914 "spl.tab.c"
     break;
 
   case 51:
@@ -1916,7 +1918,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node((yyvsp[0].iVal),CHARACTER_CONSTANT,NULL,NULL,NULL);
     }
-#line 1920 "spl.tab.c"
+#line 1922 "spl.tab.c"
     break;
 
   case 52:
@@ -1924,7 +1926,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,CONSTANT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1928 "spl.tab.c"
+#line 1930 "spl.tab.c"
     break;
 
   case 53:
@@ -1932,7 +1934,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(MINUS,NUMBER_CONSTANT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1936 "spl.tab.c"
+#line 1938 "spl.tab.c"
     break;
 
   case 54:
@@ -1940,7 +1942,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(MINUS+PERIOD,NUMBER_CONSTANT,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1944 "spl.tab.c"
+#line 1946 "spl.tab.c"
     break;
 
   case 55:
@@ -1948,7 +1950,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(PERIOD,NUMBER_CONSTANT,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1952 "spl.tab.c"
+#line 1954 "spl.tab.c"
     break;
 
   case 56:
@@ -1956,7 +1958,7 @@ yyreduce:
     {
         (yyval.tVal) = create_node(NOTHING,NUMBER_CONSTANT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1960 "spl.tab.c"
+#line 1962 "spl.tab.c"
     break;
 
   case 57:
@@ -1964,11 +1966,11 @@ yyreduce:
     {
         (yyval.tVal) = create_node((yyvsp[0].iVal),NUMBER_VALUE,NULL,NULL,NULL);
     }
-#line 1968 "spl.tab.c"
+#line 1970 "spl.tab.c"
     break;
 
 
-#line 1972 "spl.tab.c"
+#line 1974 "spl.tab.c"
 
       default: break;
     }
@@ -2421,13 +2423,46 @@ char* GenerateCode(TERNARY_TREE t)
         }
         else {
             char* myWriteStatement = GenerateCode(t->first);
-            if (myWriteStatement!=0){
+            /* if (myWriteStatement!=0){
                 if (strpbrk(myWriteStatement,"+-/*")){
                     printf("printf(\"%%d\",(%s));\n",myWriteStatement);
                 } else {
                     printf("printf(\"%%s\",\"%s\");\n",myWriteStatement);
                 }
-            }
+            } */
+        }
+        break;
+
+        /* case OUTPUT_LIST: ;
+        char *myOutputList = malloc (sizeof (char) * DEST_SIZE);
+        char *tempOutputList = malloc (sizeof (char) * DEST_SIZE);
+        strcpy(myOutputList,GenerateCode(t->first));
+
+
+
+        if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
+            printf("printf(\"%%%c\", %s);\n",symTab[t->first->item]->type,symTab[t->first->item]->identifier);
+            return 0;
+        }
+
+        if (t->second != NULL) {
+            tempOutputList = GenerateCode(t->second);
+            strcat(myOutputList,tempOutputList);
+        } else {
+            return myOutputList;
+        }
+        break; */
+
+        case OUTPUT_LIST:
+        if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
+            printf("printf(\"%%%c\", %s);\n",symTab[t->first->item]->type,symTab[t->first->item]->identifier);
+        } else if (strpbrk(GenerateCode(t->first),"+-/*")){
+            printf("printf(\"%%d\",(%s));\n",GenerateCode(t->first));
+        } else {
+            printf("printf(\"%%c\",\'%s\');\n",GenerateCode(t->first));
+        }
+        if (t->second != NULL) {
+            GenerateCode(t->second);
         }
         break;
 
@@ -2481,20 +2516,6 @@ char* GenerateCode(TERNARY_TREE t)
             byStatement = GenerateCode(t->first);
             toStatement = GenerateCode(t->second);
             printf("(%s-(%s))*(%s/abs(%s))<=0;%s+=%s",symTab[t->item]->identifier,toStatement,byStatement,byStatement,symTab[t->item]->identifier,byStatement);
-        }
-        break;
-
-        case OUTPUT_LIST: ;
-        char *myOutputList = malloc (sizeof (char) * DEST_SIZE);
-        strcpy(myOutputList,GenerateCode(t->first));
-        if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
-            printf("printf(\"%%%c\", %s);\n",symTab[t->first->item]->type,symTab[t->first->item]->identifier);
-            return 0;
-        }
-        if (t->second != NULL) {
-            strcat(myOutputList,GenerateCode(t->second));
-        } else {
-            return myOutputList;
         }
         break;
 
@@ -2566,7 +2587,6 @@ char* GenerateCode(TERNARY_TREE t)
             strcpy(myNumberConstant,GenerateCode(t->first));
         }
         return myNumberConstant;
-        printf("%s",myNumberConstant);
         break;
 
         case NUMBER_VALUE: ;
