@@ -11,7 +11,7 @@ CODE
   IF integer <= 5  OR integer >=12 THEN
     WRITE (integer)
   ENDIF;
-  WRITE ( (36-1),(7+4.0) ); NEWLINE;
+  WRITE ( (36-1) ); NEWLINE;
 
   FOR integer IS -1 BY -1 TO -5 DO
     WRITE(integer); NEWLINE

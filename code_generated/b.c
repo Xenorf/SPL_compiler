@@ -7,12 +7,13 @@ float d,e;
 scanf(" %d", &a);
 scanf(" %d", &b);
 if (a > b){
-printf("%s","A");
+printf("%c",'A');
 } else {
-printf("%s","B");
+printf("%c",'B');
 }
 printf("\n");
 scanf(" %f", &d);
+e = 450;
 e = d*2.3;
 printf("%f", e);
 printf("\n");
