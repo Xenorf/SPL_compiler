@@ -86,6 +86,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include "tinyexpr.h"
 
 /* make forward declarations to avoid compiler warnings */
 int yylex (void);
@@ -99,9 +100,9 @@ void yyerror (char *);
 #define NOTHING        -1
 #define DEST_SIZE 40
 
-  enum ParseTreeNodeType { PROGRAM, BLOCK, DECLARATION_BLOCK, IDENTIFIER_LIST, TYPE_VALUE, STATEMENT_LIST, STATEMENT, ASSIGNMENT_STATEMENT, IF_STATEMENT, DO_STATEMENT, WHILE_STATEMENT, FOR_STATEMENT, WRITE_STATEMENT, READ_STATEMENT, OUTPUT_LIST, CONDITIONAL, COMPARATOR, EXPRESSION, TERM, VALUE, CONSTANT, CHARACTER_CONSTANT, NUMBER_CONSTANT, INTEGER, IDENTIFIER_VALUE, NUMBER_VALUE } ;  
+  enum ParseTreeNodeType { PROGRAM_SEMENTIC_CHECK, PROGRAM, BLOCK, DECLARATION_BLOCK, IDENTIFIER_LIST, TYPE_VALUE, STATEMENT_LIST, STATEMENT, ASSIGNMENT_STATEMENT, IF_STATEMENT, DO_STATEMENT, WHILE_STATEMENT, FOR_STATEMENT, WRITE_STATEMENT, READ_STATEMENT, OUTPUT_LIST, CONDITIONAL, COMPARATOR, EXPRESSION, TERM, VALUE, CONSTANT, CHARACTER_CONSTANT, NUMBER_CONSTANT, INTEGER, IDENTIFIER_VALUE, NUMBER_VALUE } ;  
 
-  char *NodeName[] = {"PROGRAM", "BLOCK", "DECLARATION_BLOCK", "IDENTIFIER_LIST", "TYPE_VALUE", "STATEMENT_LIST", "STATEMENT", "ASSIGNMENT_STATEMENT", "IF_STATEMENT", "DO_STATEMENT", "WHILE_STATEMENT", "FOR_STATEMENT", "WRITE_STATEMENT", "READ_STATEMENT", "OUTPUT_LIST", "CONDITIONAL", "COMPARATOR", "EXPRESSION", "TERM", "VALUE", "CONSTANT", "CHARACTER_CONSTANT", "NUMBER_CONSTANT", "INTEGER", "IDENTIFIER_VALUE", "NUMBER_VALUE"} ;
+  char *NodeName[] = {"PROGRAM_SEMENTIC_CHECK", "PROGRAM", "BLOCK", "DECLARATION_BLOCK", "IDENTIFIER_LIST", "TYPE_VALUE", "STATEMENT_LIST", "STATEMENT", "ASSIGNMENT_STATEMENT", "IF_STATEMENT", "DO_STATEMENT", "WHILE_STATEMENT", "FOR_STATEMENT", "WRITE_STATEMENT", "READ_STATEMENT", "OUTPUT_LIST", "CONDITIONAL", "COMPARATOR", "EXPRESSION", "TERM", "VALUE", "CONSTANT", "CHARACTER_CONSTANT", "NUMBER_CONSTANT", "INTEGER", "IDENTIFIER_VALUE", "NUMBER_VALUE"} ;
 
 #ifndef TRUE
 #define TRUE 1
@@ -140,6 +141,7 @@ int ContainsLetter(char*);
 struct symTabNode {
     char identifier[IDLENGTH];
     char type;
+    char state;
 };
 
 typedef  struct symTabNode SYMTABNODE;
@@ -151,7 +153,6 @@ int currentSymTabSize = 0;
 char currentType;
 int inDeclarationBlock = 0;
 int nbForLoop = 0;
-//global expression to optimize code
 char * expressionToParse = "0";
 char peek();
 char get();
@@ -159,9 +160,11 @@ int expression();
 int number();
 int factor();
 int term();
+char EvaluateExpressionType(char*);
+char* OptimizeExpression(char*);
 
 
-#line 165 "spl.tab.c"
+#line 168 "spl.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -260,12 +263,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 98 "spl.y"
+#line 101 "spl.y"
 
     int iVal;
     TERNARY_TREE  tVal;
 
-#line 269 "spl.tab.c"
+#line 272 "spl.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -645,12 +648,12 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   107,   107,   119,   123,   128,   132,   137,   141,   146,
-     150,   154,   159,   163,   168,   172,   176,   180,   184,   188,
-     192,   197,   202,   206,   211,   216,   221,   226,   230,   235,
-     240,   244,   249,   253,   257,   261,   266,   270,   274,   278,
-     282,   286,   291,   295,   299,   304,   308,   312,   317,   321,
-     325,   330,   334,   339,   343,   347,   351,   356
+       0,   110,   110,   121,   125,   130,   134,   139,   143,   148,
+     152,   156,   161,   165,   170,   174,   178,   182,   186,   190,
+     194,   199,   204,   208,   213,   218,   223,   228,   232,   237,
+     242,   246,   251,   255,   259,   263,   268,   272,   276,   280,
+     284,   288,   293,   297,   301,   306,   310,   314,   319,   323,
+     327,   332,   336,   341,   345,   349,   353,   358
 };
 #endif
 
@@ -1526,462 +1529,461 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 108 "spl.y"
+#line 111 "spl.y"
     {       
         TERNARY_TREE ParseTree;
-        ParseTree = create_node((yyvsp[-5].iVal),PROGRAM,(yyvsp[-3].tVal),NULL,NULL);
-        #ifdef PRINTTREE
+        ParseTree = create_node((yyvsp[-5].iVal),PROGRAM,(yyvsp[-3].tVal),create_node((yyvsp[-1].iVal),PROGRAM_SEMENTIC_CHECK,NULL,NULL,NULL),NULL);
+        #ifdef DEBUG
         PrintTree(ParseTree);
-        #endif
-        #ifdef GENCODE
+        #else
         GenerateCode(ParseTree);
         #endif
     }
-#line 1541 "spl.tab.c"
+#line 1543 "spl.tab.c"
     break;
 
   case 3:
-#line 120 "spl.y"
+#line 122 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,BLOCK,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1549 "spl.tab.c"
+#line 1551 "spl.tab.c"
     break;
 
   case 4:
-#line 124 "spl.y"
+#line 126 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,BLOCK,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1557 "spl.tab.c"
+#line 1559 "spl.tab.c"
     break;
 
   case 5:
-#line 129 "spl.y"
+#line 131 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,DECLARATION_BLOCK,(yyvsp[-4].tVal),(yyvsp[-1].tVal),NULL);
     }
-#line 1565 "spl.tab.c"
+#line 1567 "spl.tab.c"
     break;
 
   case 6:
-#line 133 "spl.y"
+#line 135 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,DECLARATION_BLOCK,(yyvsp[-5].tVal),(yyvsp[-2].tVal),(yyvsp[0].tVal));
     }
-#line 1573 "spl.tab.c"
+#line 1575 "spl.tab.c"
     break;
 
   case 7:
-#line 138 "spl.y"
+#line 140 "spl.y"
     {
         (yyval.tVal) = create_node((yyvsp[0].iVal),IDENTIFIER_VALUE,NULL,NULL,NULL);
     }
-#line 1581 "spl.tab.c"
+#line 1583 "spl.tab.c"
     break;
 
   case 8:
-#line 142 "spl.y"
+#line 144 "spl.y"
     {
         (yyval.tVal) = create_node((yyvsp[0].iVal),IDENTIFIER_LIST,(yyvsp[-2].tVal),NULL,NULL);
     }
-#line 1589 "spl.tab.c"
+#line 1591 "spl.tab.c"
     break;
 
   case 9:
-#line 147 "spl.y"
+#line 149 "spl.y"
     {
         (yyval.tVal) = create_node(CHARACTER_TYPE,TYPE_VALUE,NULL,NULL,NULL);
     }
-#line 1597 "spl.tab.c"
+#line 1599 "spl.tab.c"
     break;
 
   case 10:
-#line 151 "spl.y"
+#line 153 "spl.y"
     {
         (yyval.tVal) = create_node(INTEGER_TYPE,TYPE_VALUE,NULL,NULL,NULL);
     }
-#line 1605 "spl.tab.c"
+#line 1607 "spl.tab.c"
     break;
 
   case 11:
-#line 155 "spl.y"
+#line 157 "spl.y"
     {
         (yyval.tVal) = create_node(REAL_TYPE,TYPE_VALUE,NULL,NULL,NULL);
     }
-#line 1613 "spl.tab.c"
+#line 1615 "spl.tab.c"
     break;
 
   case 12:
-#line 160 "spl.y"
+#line 162 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT_LIST,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1621 "spl.tab.c"
+#line 1623 "spl.tab.c"
     break;
 
   case 13:
-#line 164 "spl.y"
+#line 166 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT_LIST,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1629 "spl.tab.c"
+#line 1631 "spl.tab.c"
     break;
 
   case 14:
-#line 169 "spl.y"
+#line 171 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1637 "spl.tab.c"
+#line 1639 "spl.tab.c"
     break;
 
   case 15:
-#line 173 "spl.y"
+#line 175 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1645 "spl.tab.c"
+#line 1647 "spl.tab.c"
     break;
 
   case 16:
-#line 177 "spl.y"
+#line 179 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1653 "spl.tab.c"
+#line 1655 "spl.tab.c"
     break;
 
   case 17:
-#line 181 "spl.y"
+#line 183 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1661 "spl.tab.c"
+#line 1663 "spl.tab.c"
     break;
 
   case 18:
-#line 185 "spl.y"
+#line 187 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1669 "spl.tab.c"
+#line 1671 "spl.tab.c"
     break;
 
   case 19:
-#line 189 "spl.y"
+#line 191 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1677 "spl.tab.c"
+#line 1679 "spl.tab.c"
     break;
 
   case 20:
-#line 193 "spl.y"
+#line 195 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,STATEMENT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1685 "spl.tab.c"
+#line 1687 "spl.tab.c"
     break;
 
   case 21:
-#line 198 "spl.y"
+#line 200 "spl.y"
     {
         (yyval.tVal) = create_node((yyvsp[0].iVal),ASSIGNMENT_STATEMENT,(yyvsp[-2].tVal),NULL,NULL);
     }
-#line 1693 "spl.tab.c"
+#line 1695 "spl.tab.c"
     break;
 
   case 22:
-#line 203 "spl.y"
+#line 205 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,IF_STATEMENT,(yyvsp[-3].tVal),(yyvsp[-1].tVal),NULL);
     }
-#line 1701 "spl.tab.c"
+#line 1703 "spl.tab.c"
     break;
 
   case 23:
-#line 207 "spl.y"
+#line 209 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,IF_STATEMENT,(yyvsp[-5].tVal),(yyvsp[-3].tVal),(yyvsp[-1].tVal));
     }
-#line 1709 "spl.tab.c"
+#line 1711 "spl.tab.c"
     break;
 
   case 24:
-#line 212 "spl.y"
+#line 214 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,DO_STATEMENT,(yyvsp[-3].tVal),(yyvsp[-1].tVal),NULL);
     }
-#line 1717 "spl.tab.c"
+#line 1719 "spl.tab.c"
     break;
 
   case 25:
-#line 217 "spl.y"
+#line 219 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,WHILE_STATEMENT,(yyvsp[-3].tVal),(yyvsp[-1].tVal),NULL);
     }
-#line 1725 "spl.tab.c"
+#line 1727 "spl.tab.c"
     break;
 
   case 26:
-#line 222 "spl.y"
+#line 224 "spl.y"
     {
         (yyval.tVal) = create_node((yyvsp[-9].iVal),FOR_STATEMENT,(yyvsp[-7].tVal),create_node((yyvsp[-9].iVal),FOR_STATEMENT,(yyvsp[-5].tVal),(yyvsp[-3].tVal),NULL),(yyvsp[-1].tVal));
     }
-#line 1733 "spl.tab.c"
+#line 1735 "spl.tab.c"
     break;
 
   case 27:
-#line 227 "spl.y"
+#line 229 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,WRITE_STATEMENT,(yyvsp[-1].tVal),NULL,NULL);
     }
-#line 1741 "spl.tab.c"
+#line 1743 "spl.tab.c"
     break;
 
   case 28:
-#line 231 "spl.y"
+#line 233 "spl.y"
     {
         (yyval.tVal) = create_node(NEWLINE,WRITE_STATEMENT,NULL,NULL,NULL);
     }
-#line 1749 "spl.tab.c"
+#line 1751 "spl.tab.c"
     break;
 
   case 29:
-#line 236 "spl.y"
+#line 238 "spl.y"
     {
         (yyval.tVal) = create_node((yyvsp[-1].iVal),READ_STATEMENT,NULL,NULL,NULL);
     }
-#line 1757 "spl.tab.c"
+#line 1759 "spl.tab.c"
     break;
 
   case 30:
-#line 241 "spl.y"
+#line 243 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,OUTPUT_LIST,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1765 "spl.tab.c"
+#line 1767 "spl.tab.c"
     break;
 
   case 31:
-#line 245 "spl.y"
+#line 247 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,OUTPUT_LIST,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1773 "spl.tab.c"
+#line 1775 "spl.tab.c"
     break;
 
   case 32:
-#line 250 "spl.y"
+#line 252 "spl.y"
     {
         (yyval.tVal) = create_node(NOT,CONDITIONAL,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1781 "spl.tab.c"
+#line 1783 "spl.tab.c"
     break;
 
   case 33:
-#line 254 "spl.y"
+#line 256 "spl.y"
     {
         (yyval.tVal) = create_node(AND,CONDITIONAL,create_node(NOTHING,CONDITIONAL,(yyvsp[-4].tVal),(yyvsp[-3].tVal),(yyvsp[-2].tVal)),(yyvsp[0].tVal),NULL);
     }
-#line 1789 "spl.tab.c"
+#line 1791 "spl.tab.c"
     break;
 
   case 34:
-#line 258 "spl.y"
+#line 260 "spl.y"
     {
         (yyval.tVal) = create_node(OR,CONDITIONAL,create_node(NOTHING,CONDITIONAL,(yyvsp[-4].tVal),(yyvsp[-3].tVal),(yyvsp[-2].tVal)),(yyvsp[0].tVal),NULL);
     }
-#line 1797 "spl.tab.c"
+#line 1799 "spl.tab.c"
     break;
 
   case 35:
-#line 262 "spl.y"
+#line 264 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,CONDITIONAL,(yyvsp[-2].tVal),(yyvsp[-1].tVal),(yyvsp[0].tVal));
     }
-#line 1805 "spl.tab.c"
+#line 1807 "spl.tab.c"
     break;
 
   case 36:
-#line 267 "spl.y"
+#line 269 "spl.y"
     {
         (yyval.tVal) = create_node(EQUAL,COMPARATOR,NULL,NULL,NULL);
     }
-#line 1813 "spl.tab.c"
+#line 1815 "spl.tab.c"
     break;
 
   case 37:
-#line 271 "spl.y"
+#line 273 "spl.y"
     {
         (yyval.tVal) = create_node(NOT_EQUAL,COMPARATOR,NULL,NULL,NULL);
     }
-#line 1821 "spl.tab.c"
+#line 1823 "spl.tab.c"
     break;
 
   case 38:
-#line 275 "spl.y"
+#line 277 "spl.y"
     {
         (yyval.tVal) = create_node(LESS_THAN,COMPARATOR,NULL,NULL,NULL);
     }
-#line 1829 "spl.tab.c"
+#line 1831 "spl.tab.c"
     break;
 
   case 39:
-#line 279 "spl.y"
+#line 281 "spl.y"
     {
         (yyval.tVal) = create_node(GREATER_THAN,COMPARATOR,NULL,NULL,NULL);
     }
-#line 1837 "spl.tab.c"
+#line 1839 "spl.tab.c"
     break;
 
   case 40:
-#line 283 "spl.y"
+#line 285 "spl.y"
     {
         (yyval.tVal) = create_node(GREATER_THAN_OR_EQUAL,COMPARATOR,NULL,NULL,NULL);
     }
-#line 1845 "spl.tab.c"
+#line 1847 "spl.tab.c"
     break;
 
   case 41:
-#line 287 "spl.y"
+#line 289 "spl.y"
     {
         (yyval.tVal) = create_node(LESS_THAN_OR_EQUAL,COMPARATOR,NULL,NULL,NULL);
     }
-#line 1853 "spl.tab.c"
+#line 1855 "spl.tab.c"
     break;
 
   case 42:
-#line 292 "spl.y"
+#line 294 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,EXPRESSION,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1861 "spl.tab.c"
+#line 1863 "spl.tab.c"
     break;
 
   case 43:
-#line 296 "spl.y"
+#line 298 "spl.y"
     {
         (yyval.tVal) = create_node(PLUS,EXPRESSION,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1869 "spl.tab.c"
+#line 1871 "spl.tab.c"
     break;
 
   case 44:
-#line 300 "spl.y"
+#line 302 "spl.y"
     {
         (yyval.tVal) = create_node(MINUS,EXPRESSION,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1877 "spl.tab.c"
+#line 1879 "spl.tab.c"
     break;
 
   case 45:
-#line 305 "spl.y"
+#line 307 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,TERM,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1885 "spl.tab.c"
+#line 1887 "spl.tab.c"
     break;
 
   case 46:
-#line 309 "spl.y"
+#line 311 "spl.y"
     {
         (yyval.tVal) = create_node(TIMES,TERM,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1893 "spl.tab.c"
+#line 1895 "spl.tab.c"
     break;
 
   case 47:
-#line 313 "spl.y"
+#line 315 "spl.y"
     {
         (yyval.tVal) = create_node(DIVIDE,TERM,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1901 "spl.tab.c"
+#line 1903 "spl.tab.c"
     break;
 
   case 48:
-#line 318 "spl.y"
+#line 320 "spl.y"
     {
         (yyval.tVal) = create_node((yyvsp[0].iVal),IDENTIFIER_VALUE,NULL,NULL,NULL);
     }
-#line 1909 "spl.tab.c"
+#line 1911 "spl.tab.c"
     break;
 
   case 49:
-#line 322 "spl.y"
+#line 324 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,VALUE,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1917 "spl.tab.c"
+#line 1919 "spl.tab.c"
     break;
 
   case 50:
-#line 326 "spl.y"
+#line 328 "spl.y"
     {
-        (yyval.tVal) = create_node(NOTHING,VALUE,(yyvsp[-1].tVal),NULL,NULL);
+        (yyval.tVal) = create_node(BRA,VALUE,(yyvsp[-1].tVal),NULL,NULL);
     }
-#line 1925 "spl.tab.c"
+#line 1927 "spl.tab.c"
     break;
 
   case 51:
-#line 331 "spl.y"
+#line 333 "spl.y"
     {
         (yyval.tVal) = create_node((yyvsp[0].iVal),CHARACTER_CONSTANT,NULL,NULL,NULL);
     }
-#line 1933 "spl.tab.c"
+#line 1935 "spl.tab.c"
     break;
 
   case 52:
-#line 335 "spl.y"
+#line 337 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,CONSTANT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1941 "spl.tab.c"
+#line 1943 "spl.tab.c"
     break;
 
   case 53:
-#line 340 "spl.y"
+#line 342 "spl.y"
     {
         (yyval.tVal) = create_node(MINUS,NUMBER_CONSTANT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1949 "spl.tab.c"
+#line 1951 "spl.tab.c"
     break;
 
   case 54:
-#line 344 "spl.y"
+#line 346 "spl.y"
     {
         (yyval.tVal) = create_node(MINUS+PERIOD,NUMBER_CONSTANT,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1957 "spl.tab.c"
+#line 1959 "spl.tab.c"
     break;
 
   case 55:
-#line 348 "spl.y"
+#line 350 "spl.y"
     {
         (yyval.tVal) = create_node(PERIOD,NUMBER_CONSTANT,(yyvsp[-2].tVal),(yyvsp[0].tVal),NULL);
     }
-#line 1965 "spl.tab.c"
+#line 1967 "spl.tab.c"
     break;
 
   case 56:
-#line 352 "spl.y"
+#line 354 "spl.y"
     {
         (yyval.tVal) = create_node(NOTHING,NUMBER_CONSTANT,(yyvsp[0].tVal),NULL,NULL);
     }
-#line 1973 "spl.tab.c"
+#line 1975 "spl.tab.c"
     break;
 
   case 57:
-#line 357 "spl.y"
+#line 359 "spl.y"
     {
         (yyval.tVal) = create_node((yyvsp[0].iVal),NUMBER_VALUE,NULL,NULL,NULL);
     }
-#line 1981 "spl.tab.c"
+#line 1983 "spl.tab.c"
     break;
 
 
-#line 1985 "spl.tab.c"
+#line 1987 "spl.tab.c"
 
       default: break;
     }
@@ -2213,7 +2215,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 361 "spl.y"
+#line 363 "spl.y"
 
 
 /* Code for routines for managing the Parse Tree */
@@ -2234,7 +2236,7 @@ TERNARY_TREE create_node(int ival, int case_identifier, TERNARY_TREE p1,
     t->third = p3;
     return (t);
 }
-#ifdef PRINTTREE
+#ifdef DEBUG
 void PrintTree(TERNARY_TREE t)
 {
     if (t == NULL) {
@@ -2298,7 +2300,7 @@ void PrintTree(TERNARY_TREE t)
 }
 #endif
 
-#ifdef GENCODE
+#if !defined(DEBUG)
 /* Function taken from the user Magos on https://cboard.cprogramming.com/c-programming/37511-checking-if-string-contains-letter.html */
 int ContainsLetter(char* string)
 {
@@ -2313,82 +2315,96 @@ int ContainsLetter(char* string)
    return FALSE;
 }
 
-/* Functions taken from the user Henrik on https://stackoverflow.com/questions/9329406/evaluating-arithmetic-expressions-from-string-in-c */
-
-char peek()
+int Isolateterms(char src[], char *arithmetic_terms[])
 {
-    return *expressionToParse;
-}
-
-char get()
-{
-    return *expressionToParse++;
-}
-
-int number()
-{
-    int result = get() - '0';
-    while (peek() >= '0' && peek() <= '9')
+    int toknum = 0, i = 0;
+    const char delimiters[] = "+*-/()";
+    char *token = strtok(src, delimiters);
+    while (token != NULL)
     {
-        result = 10*result + get() - '0';
+        arithmetic_terms[i] = malloc(strlen(token)+1);
+        strcpy(arithmetic_terms[i], token);
+        token = strtok(NULL, delimiters);
+        i+=1;
     }
-    return result;
+    return i;
 }
 
-int factor()
-{
-    if (peek() >= '0' && peek() <= '9')
-        return number();
-    else if (peek() == '(')
-    {
-        get(); // '('
-        int result = expression();
-        get(); // ')'
-        return result;
+char EvaluateExpressionType(char* pExpression) {
+    int j,nbTerms;
+    char* arithmetic_terms[10];
+    char src[DEST_SIZE];
+    char type,lastType;
+    strcpy(src,pExpression);
+    nbTerms = Isolateterms(src, arithmetic_terms);
+    for (j=0;j<nbTerms;j++) {
+        if (lookup(arithmetic_terms[j])!=-1 && !strpbrk(arithmetic_terms[j],"'")) {
+             if (!symTab[lookup(arithmetic_terms[j])]->state){
+                fprintf(stderr,"\033[0;31m[ERROR]\033[0m Undeclared identifier (%s)\n",symTab[lookup(arithmetic_terms[j])]->identifier);
+                exit(1);
+            } else if (symTab[lookup(arithmetic_terms[j])]->state!='i') {
+                fprintf(stderr,"\033[0;33m[WARNING]\033[0m Use of uninitialized identifier (%s)\n",symTab[lookup(arithmetic_terms[j])]->identifier);
+            }
+            type = symTab[lookup(arithmetic_terms[j])]->type;
+        } else if (!ContainsLetter(arithmetic_terms[j]) && strpbrk(arithmetic_terms[j],".")){
+            type = 'f';
+        } else if (!ContainsLetter(arithmetic_terms[j])) {
+            type = 'd';
+        } else if (ContainsLetter(arithmetic_terms[j]) && strpbrk(arithmetic_terms[j],"'")) {
+            type = 'c';
+        } else {
+            printf("BOOM %s\n",arithmetic_terms[j]);
+        }
+        if (!lastType) {
+            lastType=type;
+        } else if (type!=lastType) {
+            if (type=='f' && lastType=='d'){
+                lastType=type;
+            } else if (type=='d' && lastType=='f') {
+                lastType='f';
+            } else {
+                fprintf(stderr,"\033[0;31m[ERROR]\033[0m Types of the assignement don't match (%s)\n",arithmetic_terms[j]);
+                exit(1);
+            }
+        } 
     }
-    else if (peek() == '-')
-    {
-        get();
-        return -factor();
+    return lastType;
+}
+
+char* OptimizeExpression(char* pExpression) {
+    int length,int_result;
+    float float_result;
+    char* expression_str;
+    char type;
+    if (!ContainsLetter(pExpression)) {
+        type = EvaluateExpressionType(pExpression);
+        if (type=='d') {
+            int_result = (int)te_interp(pExpression, 0);
+            length = snprintf( NULL, 0, "%d", int_result );
+            expression_str = malloc( length + 1 );
+            snprintf( expression_str, length + 1, "%d", int_result );
+            return expression_str;
+        } else if (type=='f') {
+            float_result = te_interp(pExpression, 0);
+            length = snprintf( NULL, 0, "%f", float_result );
+            expression_str = malloc( length + 1 );
+            snprintf( expression_str, length + 1, "%f", float_result );
+            return expression_str;
+        }
     }
-    return 0; // error
-}
-
-int term()
-{
-    int result = factor();
-    while (peek() == '*' || peek() == '/')
-        if (get() == '*')
-            result *= factor();
-        else
-            result /= factor();
-    return result;
-}
-
-int expression()
-{
-    int result = term();
-    while (peek() == '+' || peek() == '-')
-        if (get() == '+')
-            result += term();
-        else
-            result -= term();
-    return result;
-}
-
-char* CalculateExpression(char* pExpression) {
-    expressionToParse = pExpression;
-    int result = expression();
-    int length = snprintf( NULL, 0, "%d", result );
-    char* expression_str = malloc( length + 1 );
-    snprintf( expression_str, length + 1, "%d", result );
-    return expression_str;
+    return pExpression;
 }
 
 char* GenerateCode(TERNARY_TREE t)
 {
+    char evalutionAssignement,*myAssignement, *myDeclaration, *myIdentifier, *myIdentifierList, *myExpression, *myTerm, *myOutputList,*isStatement,*toStatement,*byStatement,*myNumberValue, *myConstant, *myValue, *firstMember, *secondMember, *myNumberConstant;
+    int length,length_number_value;
+    char src[]= "e*(5.0+6)";
     switch(t->nodeIdentifier){
         case PROGRAM:
+        if (t->item != t->second->item) {
+            fprintf(stderr,"\033[0;33m[WARNING]\033[0m Program identifiers don't match (%s,%s)\n",symTab[t->item]->identifier,symTab[t->second->item]->identifier);
+        }
         printf("#include <stdio.h>\n#include <stdlib.h>\nint main() {\n");
         GenerateCode(t->first);
         printf("return 0;\n}\n");
@@ -2404,8 +2420,8 @@ char* GenerateCode(TERNARY_TREE t)
         break;
 
         case DECLARATION_BLOCK: ;
+        myDeclaration = malloc (sizeof (char) * DEST_SIZE);
         inDeclarationBlock = 1;
-        char *myDeclaration = malloc (sizeof (char) * DEST_SIZE);
         GenerateCode(t->second);
         myDeclaration = GenerateCode(t->first);
         if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
@@ -2432,20 +2448,30 @@ char* GenerateCode(TERNARY_TREE t)
         break;
 
         case IDENTIFIER_VALUE: ;
+        length = snprintf( NULL, 0, "%d", t->item );
+        myIdentifier = malloc( length + 1 );
+        snprintf( myIdentifier, length + 1, "%d", t->item );
         if (inDeclarationBlock) {
             symTab[t->item]->type = currentType;
+            if (symTab[t->item]->state) {
+                fprintf(stderr,"\033[0;31m[ERROR]\033[0m Identifier already declared (%s)\n",symTab[t->item]->identifier);
+                exit(1);
+            }
+            symTab[t->item]->state = 'd';
         }
-        int length = snprintf( NULL, 0, "%d", t->item );
-        char* myIdentifier = malloc( length + 1 );
-        snprintf( myIdentifier, length + 1, "%d", t->item );
         return myIdentifier;
         break;
 
         case IDENTIFIER_LIST: ;
-        if (inDeclarationBlock) {//define type when we are in the declaration block
+        if (inDeclarationBlock) {
             symTab[t->item]->type = currentType;
+            if (symTab[t->item]->state) {
+                fprintf(stderr,"\033[0;31m[ERROR]\033[0m Identifier already declared (%s)\n",symTab[t->item]->identifier);
+                exit(1);
+            }
+            symTab[t->item]->state = 'd';
         }
-        char *myIdentifierList = malloc (sizeof (char) * DEST_SIZE);
+        myIdentifierList = malloc (sizeof (char) * DEST_SIZE);
         if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
             GenerateCode(t->first);
             strcpy(myIdentifierList,symTab[t->first->item]->identifier);
@@ -2476,16 +2502,29 @@ char* GenerateCode(TERNARY_TREE t)
         break;
 
         case ASSIGNMENT_STATEMENT: ;
-        char *myAssignement = malloc (sizeof (char) * DEST_SIZE);
+        myAssignement = malloc (sizeof (char) * DEST_SIZE);
         strcpy(myAssignement,GenerateCode(t->first));
-        if (!ContainsLetter(myAssignement)) {
-            strcpy(myAssignement,CalculateExpression(myAssignement));
+        evalutionAssignement = EvaluateExpressionType(myAssignement);
+        if (symTab[t->item]->type == 'd' && evalutionAssignement=='f' && evalutionAssignement!=0) {
+            fprintf(stderr,"\033[0;33m[WARNING]\033[0m Casting a float to an integer (%s->%s)\n",myAssignement,symTab[t->item]->identifier);
+        } else if (symTab[t->item]->type == 'c' && (evalutionAssignement=='f'||evalutionAssignement=='d') && evalutionAssignement!=0){
+            fprintf(stderr,"\033[0;31m[ERROR]\033[0m Types of the assignement don't match (%s->%s)\n",myAssignement,symTab[t->item]->identifier);
+            exit(1);
+        } else if ((symTab[t->item]->type == 'd' || symTab[t->item]->type == 'f') && evalutionAssignement=='c') {
+            fprintf(stderr,"\033[0;31m[ERROR]\033[0m Types of the assignement don't match (%s->%s)\n",myAssignement,symTab[t->item]->identifier);
+            exit(1);
         }
+        strcpy(myAssignement,OptimizeExpression(myAssignement));
+        if (!symTab[t->item]->state) {
+            fprintf(stderr,"\033[0;31m[ERROR]\033[0m Undeclared identifier (%s)\n",symTab[t->item]->identifier);
+            exit(1);
+        }
+        symTab[t->item]->state = 'i';
         printf("%s = %s;\n",symTab[t->item]->identifier,myAssignement);
         break;
 
         case EXPRESSION: ;
-        char *myExpression = malloc (sizeof (char) * DEST_SIZE);
+        myExpression = malloc (sizeof (char) * DEST_SIZE);
         strcpy(myExpression,GenerateCode(t->first));
         if (t->item == PLUS) {
             strcat(myExpression,"+");
@@ -2498,7 +2537,7 @@ char* GenerateCode(TERNARY_TREE t)
         break;
 
         case TERM: ;
-        char *myTerm = malloc (sizeof (char) * DEST_SIZE);
+        myTerm = malloc (sizeof (char) * DEST_SIZE);
         if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
             strcpy(myTerm,symTab[t->first->item]->identifier);
         } else {
@@ -2529,19 +2568,27 @@ char* GenerateCode(TERNARY_TREE t)
         break;
 
         case OUTPUT_LIST: ;
-        char *myOutputList = malloc (sizeof (char) * DEST_SIZE);
+        myOutputList = malloc (sizeof (char) * DEST_SIZE);
         strcpy(myOutputList,GenerateCode(t->first));
         if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
+            if (!symTab[t->first->item]->state) {
+                fprintf(stderr,"\033[0;31m[ERROR]\033[0m Undeclared identifier (%s)\n",symTab[t->first->item]->identifier);
+                exit(1);
+            } else if (symTab[t->first->item]->state == 'd') {
+                fprintf(stderr,"\033[0;33m[WARNING]\033[0m Uninitialized identifier (%s)\n",symTab[t->first->item]->identifier);
+            }
             printf("printf(\"%%%c\", %s);\n",symTab[t->first->item]->type,symTab[t->first->item]->identifier);
         } else if (strpbrk(myOutputList,"+-/*")){
             if (!ContainsLetter(myOutputList)) {
-                strcpy(myOutputList,CalculateExpression(myOutputList));
+                strcpy(myOutputList,OptimizeExpression(myOutputList));
                 printf("printf(\"%%d\",%s);\n",myOutputList);
             } else {
                 printf("printf(\"%%d\",(%s));\n",myOutputList);
             }
+        } else if (strpbrk(myOutputList,"'")){
+            printf("printf(\"%%c\",%s);\n",myOutputList);
         } else {
-            printf("printf(\"%%c\",\'%s\');\n",myOutputList);
+            printf("printf(\"%%d\",%s);\n",myOutputList);
         }
         if (t->second != NULL) {
             GenerateCode(t->second);
@@ -2584,35 +2631,26 @@ char* GenerateCode(TERNARY_TREE t)
         break;
 
         case FOR_STATEMENT: ;
-        char *isStatement = malloc (sizeof (char) * DEST_SIZE);
-        char *byStatement = malloc (sizeof (char) * DEST_SIZE);
-        char *toStatement = malloc (sizeof (char) * DEST_SIZE);
+        isStatement = malloc (sizeof (char) * DEST_SIZE);
+        byStatement = malloc (sizeof (char) * DEST_SIZE);
+        toStatement = malloc (sizeof (char) * DEST_SIZE);
         if (t->third!=NULL) {
             nbForLoop+=1;
-            strcpy(isStatement,GenerateCode(t->first));
-            if (!ContainsLetter(isStatement)) {
-                strcpy(isStatement,CalculateExpression(isStatement));
-            }
+            strcpy(isStatement,OptimizeExpression(GenerateCode(t->first)));
             printf("register int _by%d;\nfor (%s=%s;",nbForLoop,symTab[t->item]->identifier,isStatement);
             GenerateCode(t->second);
             GenerateCode(t->third);
             printf("}\n");
         } else {
-            strcpy(byStatement,GenerateCode(t->first));
-            if (!ContainsLetter(byStatement)) {
-                strcpy(byStatement,CalculateExpression(byStatement));
-            }
-            strcpy(toStatement,GenerateCode(t->second));
-            if (!ContainsLetter(toStatement)) {
-                strcpy(toStatement,CalculateExpression(toStatement));
-            }
+            strcpy(byStatement,OptimizeExpression(GenerateCode(t->first)));
+            strcpy(toStatement,OptimizeExpression(GenerateCode(t->second)));
             printf("_by%d=%s,(%s-(%s))*((_by%d > 0) - (_by%d < 0)) <= 0; %s+=_by%d) {\n",nbForLoop,byStatement,symTab[t->item]->identifier,toStatement,nbForLoop,nbForLoop,symTab[t->item]->identifier,nbForLoop);
         }
         break;
 
         case CONDITIONAL: ;
-        char *firstMember = malloc (sizeof (char) * DEST_SIZE);
-        char *secondMember = malloc (sizeof (char) * DEST_SIZE);
+        firstMember = malloc (sizeof (char) * DEST_SIZE);
+        secondMember = malloc (sizeof (char) * DEST_SIZE);
         if (t->item == AND) {
             GenerateCode(t->first);
             printf(" && ");
@@ -2628,13 +2666,13 @@ char* GenerateCode(TERNARY_TREE t)
         } else {
             strcpy(firstMember,GenerateCode(t->first));
             if (strpbrk(firstMember,"+/-*")) {
-                strcpy(firstMember,CalculateExpression(firstMember));
+                strcpy(firstMember,OptimizeExpression(firstMember));
             }
             printf("%s",firstMember);
             GenerateCode(t->second);
             strcpy(secondMember,GenerateCode(t->third));
             if (strpbrk(secondMember,"+-/*")) {
-                strcpy(secondMember,CalculateExpression(secondMember));
+                strcpy(secondMember,OptimizeExpression(secondMember));
             }
             printf("%s",secondMember);
         }
@@ -2657,12 +2695,19 @@ char* GenerateCode(TERNARY_TREE t)
         break;
 
         case VALUE: ;
-        char* myValue = GenerateCode(t->first);
+        myValue = malloc (sizeof (char) * DEST_SIZE);
+        if (t->item == BRA) {
+            strcpy(myValue,"(");
+            strcat(myValue,GenerateCode(t->first));
+            strcat(myValue,")");
+        } else {
+            myValue = GenerateCode(t->first);
+        }
         return myValue;
         break;
 
         case CONSTANT: ;
-        char* myConstant = GenerateCode(t->first);
+        myConstant = GenerateCode(t->first);
         return myConstant;
         break;
 
@@ -2671,7 +2716,7 @@ char* GenerateCode(TERNARY_TREE t)
         break;
 
         case NUMBER_CONSTANT: ;
-        char *myNumberConstant = malloc (sizeof (char) * DEST_SIZE);
+        myNumberConstant = malloc (sizeof (char) * DEST_SIZE);
         if (t->item == PERIOD) {
             strcpy(myNumberConstant,GenerateCode(t->first));
             strcat(myNumberConstant,".");
@@ -2691,8 +2736,8 @@ char* GenerateCode(TERNARY_TREE t)
         break;
 
         case NUMBER_VALUE: ;
-        int length_number_value = snprintf( NULL, 0, "%d", t->item );
-        char* myNumberValue = malloc( length_number_value + 1 );
+        length_number_value = snprintf( NULL, 0, "%d", t->item );
+        myNumberValue = malloc( length_number_value + 1 );
         snprintf( myNumberValue, length_number_value + 1, "%d", t->item );
         return myNumberValue;
         break;

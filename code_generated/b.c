@@ -13,7 +13,6 @@ printf("%c",'B');
 }
 printf("\n");
 scanf(" %f", &d);
-e = 450;
 e = d*2.3;
 printf("%f", e);
 printf("\n");

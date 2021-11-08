@@ -1,0 +1,15 @@
+ProgB:
+
+DECLARATIONS
+
+a, b OF TYPE INTEGER;
+c OF TYPE CHARACTER;
+d, e OF TYPE REAL;
+
+
+CODE
+  3 -> e;
+  (5.0 + 9) *3 -> e;
+  NEWLINE
+
+ENDP ProgB.

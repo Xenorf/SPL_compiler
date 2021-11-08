@@ -6,7 +6,7 @@ scanf(" %d", &integer);
 if (integer <= 5 || integer >= 12){
 printf("%d", integer);
 }
-printf("%d",(36-1));
+printf("%d",35);
 printf("\n");
 register int _by1;
 for (integer=-1;_by1=-1,(integer-(-5))*((_by1 > 0) - (_by1 < 0)) <= 0; integer+=_by1) {

@@ -2,8 +2,8 @@
 #include <stdlib.h>
 int main() {
 int a;
-register int _by;
-for (a=1;_by=1,(a-(13))*((_by > 0) - (_by < 0)) <= 0; a+=_by) {
+register int _by1;
+for (a=1;_by1=1,(a-(13))*((_by1 > 0) - (_by1 < 0)) <= 0; a+=_by1) {
 if (!(a == 7)){
 printf("%d", a);
 printf("\n");

@@ -2,12 +2,12 @@ ProgF:
 
 DECLARATIONS
 
-integer,i,a OF TYPE INTEGER;
-d, e OF TYPE REAL;
+integer,i,a,e OF TYPE INTEGER;
+d OF TYPE REAL;
 
 
 CODE
-  5 * 90 -> e;
+  5 * 90.0 -> e;
   READ (integer);
   IF integer <= 2*2+1  OR integer >=12 THEN
     WRITE (integer)
@@ -24,4 +24,4 @@ CODE
   ENDWHILE
 
 ENDP
-ProgF.
+ProgG.

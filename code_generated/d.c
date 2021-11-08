@@ -2,8 +2,8 @@
 #include <stdlib.h>
 int main() {
 float r1,r2,r3;
-r1 = -2;
-r2 = -34;
+r1 = -2.4;
+r2 = -34.989;
 r3 = r1*r2/7.4;
 printf("%f", r3);
 printf("\n");

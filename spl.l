@@ -2,15 +2,16 @@
 #ifdef PRINT
 #define RETURN(typearg,token) printf(#typearg" "#token "\n");
 #define RETURN_ID(typearg,token) printf("%s " #token"\n",yytext);
+#define RETURN_CHAR(typearg,token) printf("%s " #token"\n",yytext);
 #define RETURN_NUMBER(typearg,token) printf("%d " #token"\n",atoi(yytext));
 #else
 #define RETURN(typearg,token) return(token);
 #define RETURN_ID(typearg,token) yylval.iVal = installId(yytext); return(token);
-#define RETURN_CHAR(typearg,token) yytext[2] = 0; yylval.iVal = installId(yytext+1); return(token);
+#define RETURN_CHAR(typearg,token) yylval.iVal = installId(yytext); return(token);
 #define RETURN_NUMBER(typearg,token) yylval.iVal = atoi(yytext); return(token);
 #endif
 #ifndef PRINT
-/* Declare Symbol Table Type and Array as imported types */
+/* Declare Symbol Table Type and Array as imported types yytext[2] = 0; yylval.iVal = installId(yytext+1);*/
 
 #include <string.h>
 extern SYMTABNODEPTR symTab[SYMTABSIZE];
@@ -74,7 +75,7 @@ OF           RETURN(keyword,OF);
 {character}  RETURN_CHAR(character,CHARACTER);
 {id}         RETURN_ID(identifier,IDENTIFIER);
 {number}     RETURN_NUMBER(decimal_number,NUMBER);
-.            printf("Unexpected symbol in the lexer %s",yytext);
+.            printf("Unexpected symbol in the lexer %s\n",yytext);exit(0);
 
 %%
 #ifndef PRINT
