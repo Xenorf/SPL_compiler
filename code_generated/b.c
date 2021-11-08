@@ -7,9 +7,7 @@ float d,e;
 scanf(" %d", &a);
 scanf(" %d", &b);
 if (a > b){
-printf("%c",'A');
 } else {
-printf("%c",'B');
 }
 printf("\n");
 scanf(" %f", &d);

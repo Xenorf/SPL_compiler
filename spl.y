@@ -29,7 +29,7 @@ void yyerror (char *);
 #define IDLENGTH       15
 #define TYPELENGTH     15
 #define NOTHING        -1
-#define DEST_SIZE 40
+#define DEST_SIZE      1000
 
   enum ParseTreeNodeType { PROGRAM_SEMENTIC_CHECK, PROGRAM, BLOCK, DECLARATION_BLOCK, IDENTIFIER_LIST, TYPE_VALUE, STATEMENT_LIST, STATEMENT, ASSIGNMENT_STATEMENT, IF_STATEMENT, DO_STATEMENT, WHILE_STATEMENT, FOR_STATEMENT, WRITE_STATEMENT, READ_STATEMENT, OUTPUT_LIST, CONDITIONAL, COMPARATOR, EXPRESSION, TERM, VALUE, CONSTANT, CHARACTER_CONSTANT, NUMBER_CONSTANT, INTEGER, IDENTIFIER_VALUE, NUMBER_VALUE } ;  
 
@@ -93,6 +93,7 @@ int factor();
 int term();
 char EvaluateExpressionType(char*);
 char* OptimizeExpression(char*);
+extern int lookup(char*);
 
 %}
 
@@ -541,56 +542,67 @@ char* OptimizeExpression(char* pExpression) {
 
 char* GenerateCode(TERNARY_TREE t)
 {
-    char evalutionIsStatement,evalutionByStatement,evalutionToStatement,evalutionAssignement,*myAssignement, *myDeclaration, *myIdentifier, *myIdentifierList, *myExpression, *myTerm, *myOutputList,*isStatement,*toStatement,*byStatement,*myNumberValue, *myConstant, *myValue, *firstMember, *secondMember, *myNumberConstant;
+    char *myProgram, *myBlock, *myTypeValue, *myForStatement, *myWhileStatement, *myReadStatement, *myStatement, *myStatementList, *myIfStatement, *myFinalOutputList, *myWriteStatement, *myFinalAssignement, *myDoStatement, *myConditional, *myComparator, evalutionIsStatement,evalutionByStatement,evalutionToStatement,evalutionAssignement,*myAssignement, *myDeclaration, *myIdentifier, *myIdentifierList, *myExpression, *myTerm, *myOutputList,*isStatement,*toStatement,*byStatement,*myNumberValue, *myConstant, *myValue, *firstMember, *secondMember, *myNumberConstant;
     int length,length_number_value,i,length_reserved;
     char * reserved_words [] = { "auto","else","long","switch","break","enum","register","typedef","case","extern","return","union","char","float","short","unsigned","const","for","signed","void","continue","goto","sizeof","volatile","default","if","static","while","do","int","struct","_Packed","double" };
     
     char src[]= "e*(5.0+6)";
     switch(t->nodeIdentifier){
         case PROGRAM:
+        myProgram = malloc (sizeof (char) * DEST_SIZE);
         if (t->item != t->second->item) {
             fprintf(stderr,"\033[0;33m[WARNING]\033[0m Program identifiers don't match (%s,%s)\n",symTab[t->item]->identifier,symTab[t->second->item]->identifier);
         }
-        printf("#include <stdio.h>\n#include <stdlib.h>\nint main() {\n");
-        GenerateCode(t->first);
-        printf("return 0;\n}\n");
+        /* printf("#include <stdio.h>\n#include <stdlib.h>\nint main() {\n"); */
+        strcpy(myProgram,"#include <stdio.h>\n#include <stdlib.h>\nint main() {\n");
+        strcat(myProgram,GenerateCode(t->first));
+        strcat(myProgram,"return 0;\n}\n");
+        
+        printf("%s",myProgram);
         break;
 
         case BLOCK:
+        myBlock = malloc (sizeof (char) * DEST_SIZE);
         if (t->second == NULL) {
-            GenerateCode(t->first);
+            strcpy(myBlock,GenerateCode(t->first));
         } else {
-            GenerateCode(t->first);
-            GenerateCode(t->second);
+            strcpy(myBlock,GenerateCode(t->first));
+            strcat(myBlock,GenerateCode(t->second));
         }
-        break;
+        return myBlock;
+        /* break; */
 
         case DECLARATION_BLOCK: ;
         myDeclaration = malloc (sizeof (char) * DEST_SIZE);
         inDeclarationBlock = 1;
-        GenerateCode(t->second);
-        myDeclaration = GenerateCode(t->first);
+        strcpy(myDeclaration,GenerateCode(t->second));
         if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
-            strcpy(myDeclaration,symTab[t->first->item]->identifier);
+            GenerateCode(t->first);
+            strcat(myDeclaration,symTab[t->first->item]->identifier);
+        } else {
+            strcat(myDeclaration,GenerateCode(t->first));
         }
-        printf("%s;\n",myDeclaration);
+        strcat(myDeclaration,";\n");
         if (t->third != NULL) {
-            GenerateCode(t->third);
+            strcat(myDeclaration,GenerateCode(t->third));
         }
         inDeclarationBlock = 0;
-        break;
+        return myDeclaration;
+        /* break; */
 
         case TYPE_VALUE:
+        myTypeValue = malloc (sizeof (char) * DEST_SIZE);
         if (t->item == CHARACTER_TYPE) {
             currentType = 'c';
-            printf("char ");
+            strcpy(myTypeValue,"char ");
         } else if (t->item == INTEGER_TYPE) {
             currentType = 'd';
-            printf("int ");
+            strcpy(myTypeValue,"int ");
         } else if (t->item == REAL_TYPE) {
             currentType = 'f';
-            printf("float ");
+            strcpy(myTypeValue,"float ");
         }
+        return myTypeValue;
         break;
 
         case IDENTIFIER_VALUE: ;
@@ -614,7 +626,7 @@ char* GenerateCode(TERNARY_TREE t)
             symTab[t->item]->state = 'd';
         }
         return myIdentifier;
-        break;
+        /* break; */
 
         case IDENTIFIER_LIST: ;
         if (inDeclarationBlock) {
@@ -634,34 +646,43 @@ char* GenerateCode(TERNARY_TREE t)
         }
         strcat(myIdentifierList,",");
         strcat(myIdentifierList,symTab[t->item]->identifier);
-        
         return myIdentifierList;
-        break;
+        /* break; */
 
         case STATEMENT_LIST:
-        if (t->second == NULL) {
-            GenerateCode(t->first);
-        } else {
-            GenerateCode(t->first);
-            GenerateCode(t->second);
+        myStatementList = malloc (sizeof (char) * DEST_SIZE);
+        strcpy(myStatementList,GenerateCode(t->first));
+        if (t->second != NULL) {
+            strcat(myStatementList,GenerateCode(t->second));
         }
-        break;
+        return myStatementList;
+        /* break; */
 
         case STATEMENT:
-        GenerateCode(t->first);
+        myStatement = malloc (sizeof (char) * DEST_SIZE);
+        strcpy(myStatement,GenerateCode(t->first));
+        return myStatement;
         break;
 
         case READ_STATEMENT:
+        myReadStatement = malloc (sizeof (char) * DEST_SIZE);
         if (!symTab[t->item]->state) {
             fprintf(stderr,"\033[0;31m[ERROR]\033[0m Undeclared identifier (%s)\n",symTab[t->item]->identifier);
             exit(1);
         }
         symTab[t->item]->state = 'i';
-        printf("scanf(\" %%%c\", &%s);\n",symTab[t->item]->type,symTab[t->item]->identifier);
-        break;
+        strcpy(myReadStatement,"scanf(\" %");
+        myReadStatement[strlen(myReadStatement)] = symTab[t->item]->type;
+        myReadStatement[strlen(myReadStatement)+1] = '\0';
+        strcat(myReadStatement,"\", &");
+        strcat(myReadStatement,symTab[t->item]->identifier);
+        strcat(myReadStatement,");\n");
+        return myReadStatement;
+        /* break; */
 
-        case ASSIGNMENT_STATEMENT: ;
+        case ASSIGNMENT_STATEMENT:
         myAssignement = malloc (sizeof (char) * DEST_SIZE);
+        myFinalAssignement = malloc (sizeof (char) * DEST_SIZE);
         strcpy(myAssignement,GenerateCode(t->first));
         evalutionAssignement = EvaluateExpressionType(myAssignement);
         if (symTab[t->item]->type == 'd' && evalutionAssignement=='f' && evalutionAssignement!=0) {
@@ -679,8 +700,13 @@ char* GenerateCode(TERNARY_TREE t)
             exit(1);
         }
         symTab[t->item]->state = 'i';
-        printf("%s = %s;\n",symTab[t->item]->identifier,myAssignement);
-        break;
+        /* printf("%s = %s;\n",symTab[t->item]->identifier,myAssignement); */
+        strcpy(myFinalAssignement,symTab[t->item]->identifier),
+        strcat(myFinalAssignement," = ");
+        strcat(myFinalAssignement,myAssignement);
+        strcat(myFinalAssignement,";\n");
+        return myFinalAssignement;
+        /* break; */
 
         case EXPRESSION: ;
         myExpression = malloc (sizeof (char) * DEST_SIZE);
@@ -693,7 +719,7 @@ char* GenerateCode(TERNARY_TREE t)
             strcat(myExpression,GenerateCode(t->second));
         }
         return myExpression;
-        break;
+        /* break; */
 
         case TERM: ;
         myTerm = malloc (sizeof (char) * DEST_SIZE);
@@ -715,19 +741,22 @@ char* GenerateCode(TERNARY_TREE t)
             }
         }
         return myTerm;
-        break;
+        /* break; */
 
         case WRITE_STATEMENT:
+        myWriteStatement = malloc (sizeof (char) * DEST_SIZE);
         if (t->item == NEWLINE) {
-            printf("printf(\"\\n\");\n");
+            strcpy(myWriteStatement,"printf(\"\\n\");\n");
         }
         else {
-            GenerateCode(t->first);
+            strcpy(myWriteStatement,GenerateCode(t->first));
         }
-        break;
+        return myWriteStatement;
+        /* break; */
 
         case OUTPUT_LIST: ;
         myOutputList = malloc (sizeof (char) * DEST_SIZE);
+        myFinalOutputList = malloc (sizeof (char) * DEST_SIZE);
         strcpy(myOutputList,GenerateCode(t->first));
         if (t->first->nodeIdentifier == IDENTIFIER_VALUE) {
             if (!symTab[t->first->item]->state) {
@@ -736,60 +765,80 @@ char* GenerateCode(TERNARY_TREE t)
             } else if (symTab[t->first->item]->state == 'd') {
                 fprintf(stderr,"\033[0;33m[WARNING]\033[0m Uninitialized identifier (%s)\n",symTab[t->first->item]->identifier);
             }
-            printf("printf(\"%%%c\", %s);\n",symTab[t->first->item]->type,symTab[t->first->item]->identifier);
+            strcpy(myFinalOutputList,"printf(\"%");
+            myFinalOutputList[strlen(myFinalOutputList)] = symTab[t->first->item]->type;
+            myFinalOutputList[strlen(myFinalOutputList)+1] = '\0';
+            strcat(myFinalOutputList,"\", ");
+            strcat(myFinalOutputList,symTab[t->first->item]->identifier);
+            strcat(myFinalOutputList,");\n");
         } else if (strpbrk(myOutputList,"+-/*")){
             if (!ContainsLetter(myOutputList)) {
                 strcpy(myOutputList,OptimizeExpression(myOutputList));
-                printf("printf(\"%%d\",%s);\n",myOutputList);
+                strcpy(myFinalOutputList,"printf(\"%d\",");
+                strcat(myFinalOutputList,myOutputList);
+                strcat(myFinalOutputList,");\n");
             } else {
-                printf("printf(\"%%d\",(%s));\n",myOutputList);
+                strcpy(myFinalOutputList,"printf(\"%d\",(");
+                strcat(myFinalOutputList,myOutputList);
+                strcat(myFinalOutputList,"));\n");
             }
         } else if (strpbrk(myOutputList,"'")){
-            printf("printf(\"%%c\",%s);\n",myOutputList);
+            strcpy(myFinalOutputList,"printf(\"%c\",");
+            strcat(myFinalOutputList,myOutputList);
+            strcat(myFinalOutputList,");\n");
         } else {
-            printf("printf(\"%%d\",%s);\n",myOutputList);
+            strcpy(myFinalOutputList,"printf(\"%d\",");
+            strcat(myFinalOutputList,myOutputList);
+            strcat(myFinalOutputList,");\n");
         }
         if (t->second != NULL) {
-            GenerateCode(t->second);
+            strcat(myFinalOutputList,GenerateCode(t->second));
         }
-        break;
+        return myFinalOutputList;
+        /* break; */
 
         case IF_STATEMENT:
+        myIfStatement = malloc (sizeof (char) * DEST_SIZE);
         if (t->third == NULL) {
-            printf("if (");
-            GenerateCode(t->first);
-            printf("){\n");
-            GenerateCode(t->second);
-            printf("}\n");
+            strcpy(myIfStatement,"if (");
+            strcat(myIfStatement,GenerateCode(t->first));
+            strcat(myIfStatement,"){\n");
+            strcat(myIfStatement,GenerateCode(t->second));
+            strcat(myIfStatement,"}\n");
         }
         else {
-            printf("if (");
-            GenerateCode(t->first);
-            printf("){\n");
-            GenerateCode(t->second);
-            printf("} else {\n");
-            GenerateCode(t->third);
-            printf("}\n");
+            strcpy(myIfStatement,"if (");
+            strcat(myIfStatement,GenerateCode(t->first));
+            strcat(myIfStatement,"){\n");
+            strcat(myIfStatement,"} else {\n");
+            strcat(myIfStatement,"}\n");
+
         }
-        break;
+        return myIfStatement;
+        /* break; */
 
         case WHILE_STATEMENT:
-        printf("while (");
-        GenerateCode(t->first);
-        printf("){\n");
-        GenerateCode(t->second);
-        printf("}\n");
-        break;
+        myWhileStatement = malloc (sizeof (char) * DEST_SIZE);
+        strcpy(myWhileStatement,"while (");
+        strcat(myWhileStatement,GenerateCode(t->first));
+        strcat(myWhileStatement,"){\n");
+        strcat(myWhileStatement,GenerateCode(t->second));
+        strcat(myWhileStatement,"}\n");
+        return myWhileStatement;
+        /* break; */
 
         case DO_STATEMENT:
-        printf("do {\n");
-        GenerateCode(t->first);
-        printf("} while (");
-        GenerateCode(t->second);
-        printf(");\n");
-        break;
+        myDoStatement = malloc (sizeof (char) * DEST_SIZE);
+        strcpy(myDoStatement,"do {\n");
+        strcat(myDoStatement,GenerateCode(t->first));
+        strcat(myDoStatement,"} while (");
+        strcat(myDoStatement,GenerateCode(t->second));
+        strcat(myDoStatement,");\n");
+        return myDoStatement;
+        /* break; */
 
-        case FOR_STATEMENT: ;
+        case FOR_STATEMENT:
+        myForStatement = malloc (sizeof (char) * DEST_SIZE);
         isStatement = malloc (sizeof (char) * DEST_SIZE);
         byStatement = malloc (sizeof (char) * DEST_SIZE);
         toStatement = malloc (sizeof (char) * DEST_SIZE);
@@ -807,69 +856,94 @@ char* GenerateCode(TERNARY_TREE t)
                 fprintf(stderr,"\033[0;31m[ERROR]\033[0m Types of the for loop statement aren't valid (%s)\n",isStatement);
                 exit(1);
             }
-            printf("register int _by%d;\nfor (%s=%s;",nbForLoop,symTab[t->item]->identifier,isStatement);
-            GenerateCode(t->second);
-            GenerateCode(t->third);
-            printf("}\n");
+            /* printf("register int _by%d;\nfor (%s=%s;",nbForLoop,symTab[t->item]->identifier,isStatement); */
+            snprintf(myForStatement, DEST_SIZE+1,"register int _by%d;\nfor (%s=%s;",nbForLoop,symTab[t->item]->identifier,isStatement);
+            strcat(myForStatement,GenerateCode(t->second));
+            strcat(myForStatement,GenerateCode(t->third));
+            strcat(myForStatement,"}\n");
+            /* GenerateCode(t->third);
+            printf("}\n"); */
         } else {
             strcpy(byStatement,OptimizeExpression(GenerateCode(t->first)));
             strcpy(toStatement,OptimizeExpression(GenerateCode(t->second)));
             evalutionByStatement = EvaluateExpressionType(byStatement);
             evalutionToStatement = EvaluateExpressionType(toStatement);
-            if ((evalutionByStatement!='d' && evalutionByStatement!='f') || (evalutionToStatement!='d' && evalutionToStatement!='f')) {
+            if (evalutionByStatement!='d' || evalutionToStatement!='d') {
                 fprintf(stderr,"\033[0;31m[ERROR]\033[0m Types of the for loop statement aren't valid (%s,%s)\n",byStatement,toStatement);
                 exit(1);
             }
-            printf("_by%d=%s,(%s-(%s))*((_by%d > 0) - (_by%d < 0)) <= 0; %s+=_by%d) {\n",nbForLoop,byStatement,symTab[t->item]->identifier,toStatement,nbForLoop,nbForLoop,symTab[t->item]->identifier,nbForLoop);
+            snprintf(myForStatement, DEST_SIZE+1, "_by%d=%s,(%s-(%s))*((_by%d > 0) - (_by%d < 0)) <= 0; %s+=_by%d) {\n",nbForLoop,byStatement,symTab[t->item]->identifier,toStatement,nbForLoop,nbForLoop,symTab[t->item]->identifier,nbForLoop);
         }
-        
-        break;
+        /* printf("%s",myForStatement); */
+        return myForStatement;
+        /* break; */
 
         case CONDITIONAL: ;
         firstMember = malloc (sizeof (char) * DEST_SIZE);
         secondMember = malloc (sizeof (char) * DEST_SIZE);
+        myConditional = malloc (sizeof (char) * DEST_SIZE);
         if (t->item == AND) {
-            GenerateCode(t->first);
-            printf(" && ");
-            GenerateCode(t->second);
+            strcpy(myConditional,GenerateCode(t->first));
+            strcat(myConditional," && ");
+            strcat(myConditional,GenerateCode(t->second));
+            /* printf(" && "); */
+            
         } else if (t->item == OR) {
-            GenerateCode(t->first);
+            strcpy(myConditional,GenerateCode(t->first));
+            strcat(myConditional," || ");
+            strcat(myConditional,GenerateCode(t->second));
+            /* GenerateCode(t->first);
             printf(" || ");
-            GenerateCode(t->second);
+            GenerateCode(t->second); */
         } else if (t->item == NOT) {
-            printf("!(");
-            GenerateCode(t->first);
-            printf(")");
+            strcpy(myConditional,"!(");
+            /* printf("!("); */
+            strcat(myConditional,GenerateCode(t->first));
+            strcat(myConditional,")");
+            /* GenerateCode(t->first);
+            printf(")"); */
         } else {
             strcpy(firstMember,GenerateCode(t->first));
             if (strpbrk(firstMember,"+/-*")) {
                 strcpy(firstMember,OptimizeExpression(firstMember));
             }
-            printf("%s",firstMember);
-            GenerateCode(t->second);
+            strcpy(myConditional,firstMember);
+            /* printf("%s",firstMember); */
+            strcat(myConditional,GenerateCode(t->second));
+            
+            
             strcpy(secondMember,GenerateCode(t->third));
             if (strpbrk(secondMember,"+-/*")) {
                 strcpy(secondMember,OptimizeExpression(secondMember));
             }
-            printf("%s",secondMember);
+            strcat(myConditional,secondMember);
+            /* printf("%s",secondMember); */
         }
-        break;
+        return myConditional;
+        /* break; */
 
         case COMPARATOR:
         if (t->item == EQUAL) {
-            printf(" == ");
+            myComparator=" == ";
+            /* printf(" == "); */
         } else if (t->item == NOT_EQUAL) {
-            printf(" != ");
+            myComparator=" != ";
+            /* printf(" != "); */
         } else if (t->item == LESS_THAN) {
-            printf(" < ");
+            myComparator=" < ";
+            /* printf(" < "); */
         } else if (t->item == GREATER_THAN) {
-            printf(" > ");
+            myComparator=" > ";
+            /* printf(" > "); */
         } else if (t->item == GREATER_THAN_OR_EQUAL) {
-            printf(" >= ");
+            myComparator=" >= ";
+            /* printf(" >= "); */
         } else if (t->item == LESS_THAN_OR_EQUAL) {
-            printf(" <= ");
+            myComparator=" <= ";
+            /* printf(" <= "); */
         }
-        break;
+        return myComparator;
+        /* break; */
 
         case VALUE: ;
         myValue = malloc (sizeof (char) * DEST_SIZE);
@@ -881,16 +955,16 @@ char* GenerateCode(TERNARY_TREE t)
             myValue = GenerateCode(t->first);
         }
         return myValue;
-        break;
+        /* break; */
 
         case CONSTANT: ;
         myConstant = GenerateCode(t->first);
         return myConstant;
-        break;
+        /* break; */
 
         case CHARACTER_CONSTANT:
         return symTab[t->item]->identifier;
-        break;
+        /* break; */
 
         case NUMBER_CONSTANT: ;
         myNumberConstant = malloc (sizeof (char) * DEST_SIZE);
@@ -910,14 +984,14 @@ char* GenerateCode(TERNARY_TREE t)
             strcpy(myNumberConstant,GenerateCode(t->first));
         }
         return myNumberConstant;
-        break;
+        /* break; */
 
         case NUMBER_VALUE: ;
         length_number_value = snprintf( NULL, 0, "%d", t->item );
         myNumberValue = malloc( length_number_value + 1 );
         snprintf( myNumberValue, length_number_value + 1, "%d", t->item );
         return myNumberValue;
-        break;
+        /* break; */
     }
 }
 #endif

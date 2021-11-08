@@ -4,7 +4,8 @@ int main() {
 int a,b;
 char c;
 float d,e;
-c = 'd';
+e = 3;
+e = (5.0+9)*3;
 printf("\n");
 return 0;
 }
