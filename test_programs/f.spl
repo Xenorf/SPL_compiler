@@ -2,20 +2,20 @@ ProgF:
 
 DECLARATIONS
 
-integer,i,a,e OF TYPE INTEGER;
+int,i,a,e OF TYPE INTEGER;
 d OF TYPE REAL;
 
 
 CODE
   5 * 90.0 -> e;
-  READ (integer);
-  IF integer <= 2*2+1  OR integer >=12 THEN
-    WRITE (integer)
+  READ (int);
+  IF int <= 2*2+1  OR int >=12 THEN
+    WRITE (int)
   ENDIF;
   WRITE ( (36-1) ); NEWLINE;
 
-  FOR integer IS 2-1 BY 2*2+1 TO 3*5 DO
-    WRITE(integer); NEWLINE
+  FOR int IS 2-1 BY 2*2+1 TO 3*5 DO
+    WRITE(int); NEWLINE
     ENDFOR;
   0 -> a;
   WHILE a < 5*2 DO

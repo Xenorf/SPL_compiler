@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "tinyexpr.h"
+/* #include "tinyexpr.h"*/
 
 /* make forward declarations to avoid compiler warnings */
 int yylex (void);
@@ -516,7 +516,7 @@ char EvaluateExpressionType(char* pExpression) {
 }
 
 char* OptimizeExpression(char* pExpression) {
-    int length,int_result;
+    /* int length,int_result;
     float float_result;
     char* expression_str;
     char type;
@@ -535,14 +535,16 @@ char* OptimizeExpression(char* pExpression) {
             snprintf( expression_str, length + 1, "%f", float_result );
             return expression_str;
         }
-    }
+    } */
     return pExpression;
 }
 
 char* GenerateCode(TERNARY_TREE t)
 {
-    char evalutionAssignement,*myAssignement, *myDeclaration, *myIdentifier, *myIdentifierList, *myExpression, *myTerm, *myOutputList,*isStatement,*toStatement,*byStatement,*myNumberValue, *myConstant, *myValue, *firstMember, *secondMember, *myNumberConstant;
-    int length,length_number_value;
+    char evalutionIsStatement,evalutionByStatement,evalutionToStatement,evalutionAssignement,*myAssignement, *myDeclaration, *myIdentifier, *myIdentifierList, *myExpression, *myTerm, *myOutputList,*isStatement,*toStatement,*byStatement,*myNumberValue, *myConstant, *myValue, *firstMember, *secondMember, *myNumberConstant;
+    int length,length_number_value,i,length_reserved;
+    char * reserved_words [] = { "auto","else","long","switch","break","enum","register","typedef","case","extern","return","union","char","float","short","unsigned","const","for","signed","void","continue","goto","sizeof","volatile","default","if","static","while","do","int","struct","_Packed","double" };
+    
     char src[]= "e*(5.0+6)";
     switch(t->nodeIdentifier){
         case PROGRAM:
@@ -592,6 +594,14 @@ char* GenerateCode(TERNARY_TREE t)
         break;
 
         case IDENTIFIER_VALUE: ;
+        length_reserved = sizeof(reserved_words)/sizeof(reserved_words[0]);
+        for(i = 0; i < length_reserved; ++i)
+        {
+            if(!strcmp(reserved_words[i], symTab[t->item]->identifier))
+            {
+                strcat(symTab[t->item]->identifier,"_r");
+            }
+        }
         length = snprintf( NULL, 0, "%d", t->item );
         myIdentifier = malloc( length + 1 );
         snprintf( myIdentifier, length + 1, "%d", t->item );
@@ -642,6 +652,11 @@ char* GenerateCode(TERNARY_TREE t)
         break;
 
         case READ_STATEMENT:
+        if (!symTab[t->item]->state) {
+            fprintf(stderr,"\033[0;31m[ERROR]\033[0m Undeclared identifier (%s)\n",symTab[t->item]->identifier);
+            exit(1);
+        }
+        symTab[t->item]->state = 'i';
         printf("scanf(\" %%%c\", &%s);\n",symTab[t->item]->type,symTab[t->item]->identifier);
         break;
 
@@ -778,9 +793,20 @@ char* GenerateCode(TERNARY_TREE t)
         isStatement = malloc (sizeof (char) * DEST_SIZE);
         byStatement = malloc (sizeof (char) * DEST_SIZE);
         toStatement = malloc (sizeof (char) * DEST_SIZE);
+        
         if (t->third!=NULL) {
+            if (!symTab[t->item]->state) {
+                fprintf(stderr,"\033[0;31m[ERROR]\033[0m Undeclared identifier (%s)\n",symTab[t->item]->identifier);
+                exit(1);
+            }
+            symTab[t->item]->state = 'i';
             nbForLoop+=1;
             strcpy(isStatement,OptimizeExpression(GenerateCode(t->first)));
+            evalutionIsStatement = EvaluateExpressionType(isStatement);
+            if (evalutionIsStatement!='d' && evalutionIsStatement!='f') {
+                fprintf(stderr,"\033[0;31m[ERROR]\033[0m Types of the for loop statement aren't valid (%s)\n",isStatement);
+                exit(1);
+            }
             printf("register int _by%d;\nfor (%s=%s;",nbForLoop,symTab[t->item]->identifier,isStatement);
             GenerateCode(t->second);
             GenerateCode(t->third);
@@ -788,8 +814,15 @@ char* GenerateCode(TERNARY_TREE t)
         } else {
             strcpy(byStatement,OptimizeExpression(GenerateCode(t->first)));
             strcpy(toStatement,OptimizeExpression(GenerateCode(t->second)));
+            evalutionByStatement = EvaluateExpressionType(byStatement);
+            evalutionToStatement = EvaluateExpressionType(toStatement);
+            if ((evalutionByStatement!='d' && evalutionByStatement!='f') || (evalutionToStatement!='d' && evalutionToStatement!='f')) {
+                fprintf(stderr,"\033[0;31m[ERROR]\033[0m Types of the for loop statement aren't valid (%s,%s)\n",byStatement,toStatement);
+                exit(1);
+            }
             printf("_by%d=%s,(%s-(%s))*((_by%d > 0) - (_by%d < 0)) <= 0; %s+=_by%d) {\n",nbForLoop,byStatement,symTab[t->item]->identifier,toStatement,nbForLoop,nbForLoop,symTab[t->item]->identifier,nbForLoop);
         }
+        
         break;
 
         case CONDITIONAL: ;
