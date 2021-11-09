@@ -8,7 +8,7 @@ d, e OF TYPE REAL;
 
 
 CODE
-  3 -> e;
+  3 + 4 -> e;
   (5.0 + 9) *3 -> e;
   NEWLINE
 
