@@ -11,13 +11,12 @@ Big thanks to Brian Tompsett and Lydia Bryan-Smith for their help during the sem
 * Install Bison `apt-get install bison`.
 * Install GraphViz `apt-get install graphviz` (we will need it to generate the graphic representation of the parse tree).
 * Authorize your user to execute **compile.sh** `chmod u+x compile.sh`.
-* Having a folder named **test_programs** and some .spl files in it
+* Having a folder named **src_programs** and some .spl files in it
 
 ## Functionalities
 
 There are multiple things you can do with this repository, **compile.sh** regroup all of them so I'll link the associated commands in each section.
 
----
 ### Lexer
 The lexer can be used to print the tokens of the source program recognized by the compiler.  
 `./compile -m lexer -p <src_program>`

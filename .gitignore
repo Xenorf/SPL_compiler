@@ -12,4 +12,5 @@ lex.yy.c
 spl.tab.c
 src_programs/Makefile
 src_programs/RunCompiler.bat
+src_programs/clean_testing.sh
 code_generated/
