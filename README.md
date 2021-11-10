@@ -65,6 +65,14 @@ The target code will be stored as **src_program.c** in the **code_generated** fo
 
 On top of the [language specification](git_ressources/definition_SPL_language.pdf) I had to define some behaviors for the compiler to work.
 
+### Code optimization
+
+The compiler does some sort of type optimization, when there is an arithmetic expression containing only integers, the expression is precalculated at compile time.  
+<br />
+For example **78 - 5 -> a** will be compiled as **a = 73;**  
+Also **WRITE( (26 - 7) )** will be compiled as **printf("%d",19);**  
+It doesn't work with arithmetic expressions containing reals.
+
 ### Type coercion
 
 * Integers **can** be assigned to real numbers, it won't give any warning.
@@ -73,9 +81,12 @@ On top of the [language specification](git_ressources/definition_SPL_language.pd
 * Arithmetic **can** be done between integers and reals.
 * Arithmetic **can't** be done with characters and another type.
 
-### Code optimization
+### Other sementic checks
+* Gives a warning if the program identifiers at the beggining and the end aren't identical.
+* Gives a warning if the value assigned to an INTEGER is greater than **INT_MAX** or less than **INT_MIN**
+* Gives a warning if the variable has been declared but is used without being initialized
+* Doesn't compile if a variable is used without being declared (also work with the program identifier if it's use for a variable).
+* Doesn't compile if a variable is declared twice
 
-The compiler does some sort of type optimization, when there is an arithmetic expression containing only integers, the expression is precalculated at compile time.  
-For example **78 - 5 -> a** will be compiled as **a = 73;**.  
-Also **WRITE( (26 - 7) )** will be compiled as **printf("%d",19);**.  
-It doesn't work with arithmetic expressions containing reals.
+### Other functionalities
+* Rename the variable by adding **_r** at the end if it's a reserved keyword in C, for example **volatile** will be renamed **volatile_r**
