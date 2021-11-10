@@ -17,19 +17,21 @@ Big thanks to Brian Tompsett and Lydia Bryan-Smith for their help during the sem
 
 There are multiple things you can do with this repository, **compile.sh** regroup all of them so I'll link the associated commands in each section.
 
+---
 ### Lexer
 The lexer can be used to print the tokens of the source program recognized by the compiler.  
 `./compile -m lexer -p <src_program>`
 
 ![Lexer diagram](git_images/lexer.drawio.png?raw=true)
 
-
+---
 ### Parser
 The parser can be used in debug mode to see the rules used and the stack generated for the source program.  
 `./compile -m parser -p <src_program>`
 
 ![Parser diagram](git_images/parser.drawio.png?raw=true)
 
+---
 ### Tree
 The parse tree can be used in 2 differents ways:
 * Printing the JSON format of the tree in the terminal. `./compile -m tree -p <src_program>`  
@@ -44,6 +46,7 @@ The parse tree can be used in 2 differents ways:
 
 The PNG tree will be created inside the **tree_generator/** folder.
 
+---
 ### Code
 The code feature can also be used in 2 differents ways:
 * Printing the generated code in the terminal. `./compile -m code -p <src_program>`  
