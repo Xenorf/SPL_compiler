@@ -1,0 +1,12 @@
+SPL01skeleton.y
+SPL01skeleton.l
+unit_tests.sh
+unit_tests/
+unit_tests_code/
+compiler
+lexer
+parser
+output
+.vscode/
+lex.yy.c
+spl.tab.c

@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 int main() {
-int a;
 register int _by1;
+int a;
 for (a=1;_by1=1,(a-(13))*((_by1 > 0) - (_by1 < 0)) <= 0; a+=_by1) {
 if (!(a == 7)){
 printf("%d", a);

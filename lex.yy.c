@@ -453,7 +453,7 @@ char *yytext;
 #define RETURN_NUMBER(typearg,token) if (strlen(yytext) >= strlen("2147483647")){if (strcmp("2147483647", yytext)<0) {fprintf(stderr,"\033[0;33m[WARNING]\033[0m Value of the integer is out of scope (%s)\n",yytext);}};yylval.iVal = atoi(yytext); return(token);
 #endif
 #ifndef PRINT
-/* Declare Symbol Table Type and Array as imported types yytext[2] = 0; yylval.iVal = installId(yytext+1);*/
+/* Declare Symbol Table Type and Array as imported types*/
 
 #include <string.h>
 extern SYMTABNODEPTR symTab[SYMTABSIZE];

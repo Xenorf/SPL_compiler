@@ -1,5 +1,6 @@
 import json
 import random
+import os
 
 leafs,random_numbers = [],[0]
 
@@ -13,7 +14,7 @@ def generate_new_random():
 
 # Read data from the file to make a string and then interpret it as JSON
 def read_parser_output() :
-    with open("tree_generator/output",'r') as f:
+    with open(os.path.dirname(os.path.realpath(__file__))+"/parser_tree_output",'r') as f:
         s = f.read().strip("\n")
     data = json.loads(s)
     return data
