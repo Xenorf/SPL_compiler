@@ -61,5 +61,14 @@ The code feature can also be used in 2 differents ways:
 
 The target code will be stored as **src_program.c** in the **code_generated** folder and their compiled version will be named **src_program.out**
 
-## Functionalities
+## Additional functionalities
 
+On top of the [language specification](git_ressources/definition_SPL_language.pdf) I had to define some behaviors for the compiler to work.
+
+### Type coercion
+
+* Integers **can** be assigned to real numbers, it won't give any warning.
+* Reals **can** be assigned to integer but it will give a warning.
+* Characters **can't** be assigned to anything else than character variables.
+* Arithmetic **can** be done between integers and reals.
+* Arithmetic **can't** be done with characters and another type.
