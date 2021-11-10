@@ -36,11 +36,14 @@ fi
 
 #defining the action of the newly compiled file (either printing the different stages, creating the tree or compiling the generated code)
 if [ "$run" = true ] && [ "$mode" = -DDEBUG ]; then
-    ./compiler < test_programs/${testprogram}.spl > tree_generator/parser_tree_output
+    ./compiler < src_programs/${testprogram}.spl > tree_generator/parser_tree_output
     python3 tree_generator/generate_tree.py | dot -Tpng -otree_generator/tree_${testprogram}.png
 elif [ "$run" = true ] && [ -z "$mode" ]; then
-    ./compiler < test_programs/${testprogram}.spl > code_generated/${testprogram}.c
+    mkdir -p code_generated
+    ./compiler < src_programs/${testprogram}.spl > code_generated/${testprogram}.c
     gcc code_generated/${testprogram}.c -o code_generated/${testprogram}.out
 elif [ "$mode" = lexer ] || [ "$mode" = -DYYDEBUG ] || [ "$mode" = -DDEBUG ] || [ -z "$mode" ]; then
-    ./compiler < test_programs/${testprogram}.spl
+    ./compiler < src_programs/${testprogram}.spl
 fi
+
+rm -f lex.yy.c compiler spl.tab.c

@@ -10,3 +10,6 @@ output
 .vscode/
 lex.yy.c
 spl.tab.c
+src_programs/Makefile
+src_programs/RunCompiler.bat
+code_generated/
