@@ -28,6 +28,8 @@ The lexer can be used to print the tokens of the source program recognized by th
 The parser can be used in debug mode to see the rules used and the stack generated for the source program.  
 `./compile -m parser -p <src_program>`
 
+![Parser diagram](git_images/parser.drawio.png?raw=true)
+
 ### Tree
 The parse tree can be used in 2 differents ways:
 * Printing the JSON format of the tree in the terminal. `./compile -m tree -p <src_program>`
