@@ -40,6 +40,8 @@ The parse tree can be used in 2 differents ways:
 
 * Passing the JSON into GraphViz to generate a PNG with a graphical representation of the parse tree. `./compile -m tree -p <src_program> -r`
 
+![Tree diagram](git_images/tree_graph.drawio.png?raw=true)
+
 The PNG tree will be created inside the **tree_generator/** folder.
 
 ### Code
