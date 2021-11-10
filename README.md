@@ -72,3 +72,10 @@ On top of the [language specification](git_ressources/definition_SPL_language.pd
 * Characters **can't** be assigned to anything else than character variables.
 * Arithmetic **can** be done between integers and reals.
 * Arithmetic **can't** be done with characters and another type.
+
+### Code optimization
+
+The compiler does some sort of type optimization, when there is an arithmetic expression containing only integers, the expression is precalculated at compile time.  
+For example **78 - 5 -> a** will be compiled as **a = 73;**.  
+Also **WRITE( (26 - 7) )** will be compiled as **printf("%d",19);**.  
+It doesn't work with arithmetic expressions containing reals.
