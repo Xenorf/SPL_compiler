@@ -3,7 +3,7 @@ rm -f lex.yy.c compiler spl.tab.c
 flex spl.l
 bison -t spl.y
 
-#defining the options used by the command
+#Defining the options used by the command
 run=false
 while getopts m:rp: flag
 do
@@ -34,7 +34,7 @@ else
 gcc spl.tab.c spl.c -o compiler -lfl ${mode}
 fi
 
-#defining the action of the newly compiled file (either printing the different stages, creating the tree or compiling the generated code)
+#Defining the action of the newly compiled file (either printing the different stages, creating the tree or compiling the generated code)
 if [ "$run" = true ] && [ "$mode" = -DDEBUG ]; then
     ./compiler < src_programs/${testprogram}.spl > tree_generator/parser_tree_output
     python3 tree_generator/generate_tree.py | dot -Tpng -otree_generator/tree_${testprogram}.png
@@ -46,4 +46,4 @@ elif [ "$mode" = lexer ] || [ "$mode" = -DYYDEBUG ] || [ "$mode" = -DDEBUG ] || 
     ./compiler < src_programs/${testprogram}.spl
 fi
 
-rm -f lex.yy.c spl.tab.c
+rm -f lex.yy.c spl.tab.c compiler
