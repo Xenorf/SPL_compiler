@@ -1,0 +1,2 @@
+[0;33m[WARNING][0m Use of uninitialized identifier (f)
+[0;31m[ERROR][0m Types of the assignement don't match (f->d)

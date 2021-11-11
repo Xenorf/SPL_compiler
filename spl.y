@@ -530,7 +530,7 @@ char EvaluateExpressionType(char* pExpression) {
     int j,nbTerms;
     char* arithmetic_terms[10];
     char src[DEST_SIZE];
-    char type,lastType;
+    char type=0,lastType=0;
     strcpy(src,pExpression);
     nbTerms = Isolateterms(src, arithmetic_terms);
     for (j=0;j<nbTerms;j++) {
@@ -560,7 +560,7 @@ char EvaluateExpressionType(char* pExpression) {
             } else if (type=='d' && lastType=='f') {
                 lastType='f';
             } else {
-                fprintf(stderr,"\033[0;31m[ERROR]\033[0m Types of the assignement don't match (%s)\n",pExpression);
+                fprintf(stderr,"\033[0;31m[ERROR]\033[0m Types of the assignement don't match aaa (%s)\n",pExpression);
                 exit(1);
             }
         } 
@@ -587,7 +587,7 @@ char* OptimizeExpression(char* pExpression) {
 /*Function that generate the C code from the parsed tree*/
 char* GenerateCode(TERNARY_TREE t)
 {
-    char *myRegisterStatement,*myProgramContent, *myProgram, *myBlock, *myTypeValue, *myForStatement, *myWhileStatement, *myReadStatement, *myStatement, *myStatementList, *myIfStatement, *myFinalOutputList, *myWriteStatement, *myFinalAssignement, *myDoStatement, *myConditional, *myComparator, evalutionIsStatement,evalutionByStatement,evalutionToStatement,evalutionAssignement,*myAssignement, *myDeclaration, *myIdentifier, *myIdentifierList, *myExpression, *myTerm, *myOutputList,*isStatement,*toStatement,*byStatement,*myNumberValue, *myConstant, *myValue, *firstMember, *secondMember, *myNumberConstant;
+    char outputType, *myRegisterStatement,*myProgramContent, *myProgram, *myBlock, *myTypeValue, *myForStatement, *myWhileStatement, *myReadStatement, *myStatement, *myStatementList, *myIfStatement, *myFinalOutputList, *myWriteStatement, *myFinalAssignement, *myDoStatement, *myConditional, *myComparator, evalutionIsStatement,evalutionByStatement,evalutionToStatement,evalutionAssignement,*myAssignement, *myDeclaration, *myIdentifier, *myIdentifierList, *myExpression, *myTerm, *myOutputList,*isStatement,*toStatement,*byStatement,*myNumberValue, *myConstant, *myValue, *firstMember, *secondMember, *myNumberConstant;
     int length,length_number_value,i,length_reserved;
     char * reserved_words [] = { "auto","else","long","switch","break","enum","register","typedef","case","extern","return","union","char","float","short","unsigned","const","for","signed","void","continue","goto","sizeof","volatile","default","if","static","while","do","int","struct","_Packed","double" };
     
@@ -810,13 +810,34 @@ char* GenerateCode(TERNARY_TREE t)
             strcat(myFinalOutputList,"\", ");
             strcat(myFinalOutputList,symTab[t->first->item]->identifier);
             strcat(myFinalOutputList,");\n");
-        } else if (strpbrk(myOutputList,"+-/*")){
+        } else {
+            outputType = EvaluateExpressionType(myOutputList);
+            if (outputType == 'd') {
+                strcpy(myOutputList,OptimizeExpression(myOutputList));
+                strcpy(myFinalOutputList,"printf(\"%d\",");
+                strcat(myFinalOutputList,myOutputList);
+                strcat(myFinalOutputList,");\n");
+            } else if (outputType == 'f') {
+                strcpy(myFinalOutputList,"printf(\"%f\",");
+                strcat(myFinalOutputList,myOutputList);
+                strcat(myFinalOutputList,");\n");
+            } else if (outputType == 'c') {
+                strcpy(myFinalOutputList,"printf(\"%c\",");
+                strcat(myFinalOutputList,myOutputList);
+                strcat(myFinalOutputList,");\n");
+            } else {
+                fprintf(stderr,"\033[0;31m[ERROR]\033[0m Unknown Type (%s)\n",myOutputList);
+            }
+        }
+        /* else if (strpbrk(myOutputList,"+-/*")){
             if (!ContainsLetter(myOutputList)) {
+                printf("IF1\n");
                 strcpy(myOutputList,OptimizeExpression(myOutputList));
                 strcpy(myFinalOutputList,"printf(\"%d\",");
                 strcat(myFinalOutputList,myOutputList);
                 strcat(myFinalOutputList,");\n");
             } else {
+                printf("ELSE1\n");
                 strcpy(myFinalOutputList,"printf(\"%d\",(");
                 strcat(myFinalOutputList,myOutputList);
                 strcat(myFinalOutputList,"));\n");
@@ -826,10 +847,11 @@ char* GenerateCode(TERNARY_TREE t)
             strcat(myFinalOutputList,myOutputList);
             strcat(myFinalOutputList,");\n");
         } else {
+            printf("ELSE2\n");
             strcpy(myFinalOutputList,"printf(\"%d\",");
             strcat(myFinalOutputList,myOutputList);
             strcat(myFinalOutputList,");\n");
-        }
+        } */
         if (t->second != NULL) {
             strcat(myFinalOutputList,GenerateCode(t->second));
         }

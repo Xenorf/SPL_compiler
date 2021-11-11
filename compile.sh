@@ -46,4 +46,4 @@ elif [ "$mode" = lexer ] || [ "$mode" = -DYYDEBUG ] || [ "$mode" = -DDEBUG ] || 
     ./compiler < src_programs/${testprogram}.spl
 fi
 
-rm -f lex.yy.c compiler spl.tab.c
+rm -f lex.yy.c spl.tab.c
