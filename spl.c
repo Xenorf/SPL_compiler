@@ -13,5 +13,5 @@ int main(void)
 
 void yyerror(char *s)
 {
-    fprintf(stderr, "Error : Exiting %s\n", s);
+    fprintf(stderr, "\033[0;31m[ERROR]\033[0m Exiting %s\n", s);
 }

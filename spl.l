@@ -11,9 +11,8 @@
 #define RETURN_NUMBER(typearg,token) if (strlen(yytext) >= strlen("2147483647")){if (strcmp("2147483647", yytext)<0) {fprintf(stderr,"\033[0;33m[WARNING]\033[0m Value of the integer is out of scope (%s)\n",yytext);}};yylval.iVal = atoi(yytext); return(token);
 #endif
 #ifndef PRINT
-/* Declare Symbol Table Type and Array as imported types*/
-
 #include <string.h>
+/* Declare Symbol Table Type and Array as imported types*/
 extern SYMTABNODEPTR symTab[SYMTABSIZE];
 extern int currentSymTabSize;
 int installId(char *);
@@ -129,7 +128,7 @@ int installId(char *id)
     {
        symTab[currentSymTabSize] = newSymTabNode();
 	   if (symTab[currentSymTabSize] == NULL) { 
-	      fprintf(stderr, "installId:Out of memory: %s %lu\n", id, sizeof(SYMTABNODEPTR)); 
+	      fprintf(stderr, "\033[0;31m[ERROR]\033[0m installId:Out of memory: %s %lu\n", id, sizeof(SYMTABNODEPTR)); 
 		  return(NOTHING);
 		  }
        /* Recommended code for preventing buffer overrun on bounded strings */

@@ -1,17 +1,16 @@
 %{
-/* Built upon SPL01skeleton.y - by Peter Parsons */
+/*Built upon SPL01skeleton.y - by Peter Parsons*/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
-/* make forward declarations to avoid compiler warnings */
+/*Make forward declarations to avoid compiler warnings*/
 int yylex (void);
 void yyerror (char *);
 
-/* Some constants.*/
-
+/*Some constants.*/
 #define SYMTABSIZE     50
 #define IDLENGTH       15
 #define TYPELENGTH     15
@@ -34,8 +33,7 @@ void yyerror (char *);
 #define NULL 0
 #endif
 
-/* ------------- parse tree definition --------------------------- */
-
+/*Parse tree definition */
 struct treeNode {
     int  item;
     int  nodeIdentifier;
@@ -47,8 +45,7 @@ struct treeNode {
 typedef  struct treeNode TREE_NODE;
 typedef  TREE_NODE *TERNARY_TREE;
 
-/* ------------- forward declarations --------------------------- */
-
+/*Forward declarations*/
 TERNARY_TREE create_node(int,int,TERNARY_TREE,TERNARY_TREE,TERNARY_TREE);
 void PrintTree(TERNARY_TREE);
 char* GenerateCode(TERNARY_TREE);
@@ -63,17 +60,14 @@ char* OptimizeExpression(char*);
 extern int lookup(char*);
 int ContainsLetter(char*);
 
-/* ------------- symbol table definition --------------------------- */
-
+/*Symbol table definition*/
 struct symTabNode {
     char identifier[IDLENGTH];
     char type;  /*variable to determine the type of identifiers when they are declared*/
     char state; /*variable to keep track the declaration and initialization of identifiers*/
 };
-
 typedef  struct symTabNode SYMTABNODE;
 typedef  SYMTABNODE        *SYMTABNODEPTR;
-
 SYMTABNODEPTR  symTab[SYMTABSIZE]; 
 
 /*Definition of global values used in the GenerateCode function*/
@@ -83,13 +77,9 @@ int inDeclarationBlock = 0;
 int nbForLoop = 0;
 char *expressionToParse;
 extern int yydebug;
-
-
-
 %}
 
 %start  program
-
 %union {
     int iVal;
     TERNARY_TREE  tVal;
@@ -354,13 +344,14 @@ integer : NUMBER
     ;
 %%
 
+/*Function to create a new node in the parse tree*/
 TERNARY_TREE create_node(int ival, int case_identifier, TERNARY_TREE p1,
 			 TERNARY_TREE  p2, TERNARY_TREE  p3)
 {
     TERNARY_TREE t;
     t = (TERNARY_TREE)malloc(sizeof(TREE_NODE));
     if (t == NULL) { 
-	    fprintf(stderr, "create_node:Out of memory: %d %lu bytes\n", case_identifier, sizeof(TREE_NODE));
+	    fprintf(stderr, "\033[0;31m[ERROR]\033[0m create_node:Out of memory: %d %lu bytes\n", case_identifier, sizeof(TREE_NODE));
 		return(t); 
 		} 
     t->item = ival;
@@ -370,8 +361,9 @@ TERNARY_TREE create_node(int ival, int case_identifier, TERNARY_TREE p1,
     t->third = p3;
     return (t);
 }
-#ifdef DEBUG
+
 /*Function to print a tree in a JSON format, meant to be used as input in GraphViz to generate a graphical representation of the tree*/
+#ifdef DEBUG
 void PrintTree(TERNARY_TREE t)
 {
     if (t == NULL) {
@@ -592,6 +584,7 @@ char* OptimizeExpression(char* pExpression) {
     return pExpression;
 }
 
+/*Function that generate the C code from the parsed tree*/
 char* GenerateCode(TERNARY_TREE t)
 {
     char *myRegisterStatement,*myProgramContent, *myProgram, *myBlock, *myTypeValue, *myForStatement, *myWhileStatement, *myReadStatement, *myStatement, *myStatementList, *myIfStatement, *myFinalOutputList, *myWriteStatement, *myFinalAssignement, *myDoStatement, *myConditional, *myComparator, evalutionIsStatement,evalutionByStatement,evalutionToStatement,evalutionAssignement,*myAssignement, *myDeclaration, *myIdentifier, *myIdentifierList, *myExpression, *myTerm, *myOutputList,*isStatement,*toStatement,*byStatement,*myNumberValue, *myConstant, *myValue, *firstMember, *secondMember, *myNumberConstant;
