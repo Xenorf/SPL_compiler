@@ -106,9 +106,7 @@ program : IDENTIFIER COLON block ENDP IDENTIFIER PERIOD
         #ifdef DEBUG
         PrintTree(ParseTree);
         #else
-        if (yydebug==0) {
-            GenerateCode(ParseTree);
-        }
+        GenerateCode(ParseTree);
         #endif
     }
     ;
@@ -857,7 +855,9 @@ char* GenerateCode(TERNARY_TREE t)
             strcpy(myIfStatement,"if (");
             strcat(myIfStatement,GenerateCode(t->first));
             strcat(myIfStatement,"){\n");
+            strcat(myIfStatement,GenerateCode(t->second));
             strcat(myIfStatement,"} else {\n");
+            strcat(myIfStatement,GenerateCode(t->third));
             strcat(myIfStatement,"}\n");
 
         }
