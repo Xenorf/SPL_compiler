@@ -17,7 +17,7 @@ The compiler has been designed to compile the SPL language into C. The language 
 
 ## How to use and how it works
 
-There are multiple things you can do with this repository, **compile.sh** regroup all of them so I'll link the associated commands in each section.
+There are multiple things you can do with this repository, **compile.sh** regroup all of them so I'll link the associated commands in each section. Each section also contains a diagram to explain what the command does.
 
 ### Lexer
 The lexer can be used to print the tokens of the source program recognized by the compiler.  
