@@ -1,0 +1,6 @@
+ProgH:
+
+CODE
+  NEWLINE;
+  5 * 6 -> b
+ENDP ProgH.

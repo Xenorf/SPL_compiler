@@ -1,0 +1,12 @@
+ProgI:
+
+DECLARATIONS
+
+a OF TYPE INTEGER;
+
+CODE
+  NEWLINE;
+  FOR a IS 'a' BY 'b' TO 13.0 DO
+    NEWLINE
+  ENDFOR
+ENDP ProgI.

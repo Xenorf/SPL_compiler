@@ -79,6 +79,7 @@ It doesn't work with arithmetic expressions containing reals.
 * Reals **can** be assigned to integer but it will give a warning.
 * Characters **can't** be assigned to anything else than character variables.
 * Arithmetic **can** be done between integers and reals.
+* Arithmetic **can** be done between characters, it's manipulate the ASCII values.
 * Arithmetic **can't** be done with characters and another type.
 
 ### Other sementic checks

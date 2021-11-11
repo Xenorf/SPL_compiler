@@ -2,26 +2,39 @@ ProgF:
 
 DECLARATIONS
 
-int,i,a,e OF TYPE INTEGER;
-d OF TYPE REAL;
+int,i,a,b,c,d,e OF TYPE INTEGER;
+f,g,h OF TYPE REAL;
+j OF TYPE CHARACTER;
 
 
 CODE
-  5 * 90.0 -> e;
+  5 * 90 -> e;
+  5.5 * 90.0 -> f;
+  5 * f -> e;
   READ (int);
-  IF int <= 2*2+1  OR int >=12 THEN
-    WRITE (int)
+  IF int <= 2*2+1 OR int >=12/6 THEN
+    WRITE (int);
+    WRITE (g);
+    h * 4 -> f
   ENDIF;
+  NEWLINE;
   WRITE ( (36-1) ); NEWLINE;
 
   FOR int IS 2-1 BY 2*2+1 TO 3*5 DO
     WRITE(int); NEWLINE
-    ENDFOR;
-  0 -> a;
+  ENDFOR;
+  2147483647 -> a;
+  2147483648 -> b;
+  -2147483647 -> c;
+  -2147483650 -> d;
+  
   WHILE a < 5*2 DO
     WRITE(a);
     a + 1 -> a
-  ENDWHILE
+  ENDWHILE;
+
+  'a' + 'd' - 'c' -> j;
+  WRITE(j)
 
 ENDP
 ProgG.

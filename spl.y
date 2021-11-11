@@ -568,7 +568,7 @@ char EvaluateExpressionType(char* pExpression) {
             } else if (type=='d' && lastType=='f') {
                 lastType='f';
             } else {
-                fprintf(stderr,"\033[0;31m[ERROR]\033[0m Types of the assignement don't match (%s)\n",arithmetic_terms[j]);
+                fprintf(stderr,"\033[0;31m[ERROR]\033[0m Types of the assignement don't match (%s)\n",pExpression);
                 exit(1);
             }
         } 
