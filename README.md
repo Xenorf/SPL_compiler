@@ -9,6 +9,7 @@ The compiler has been designed to compile the SPL language into C. The language 
 > :warning: **If you are a Windows or MacOS user**: This repository is meant to be used on Ubuntu. It's still possible to run the compiler on Windows but this document don't explain how.
 
 * Install Python 3 `apt-get install python3`.
+* Install GCC `apt-get install gcc`.
 * Install Flex `apt-get install flex`.
 * Install Bison `apt-get install bison`.
 * Install GraphViz `apt-get install graphviz` (we will need it to generate the graphic representation of the parse tree).
