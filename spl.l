@@ -74,7 +74,7 @@ OF           RETURN(keyword,OF);
 {character}  RETURN_CHAR(character,CHARACTER);
 {id}         RETURN_ID(identifier,IDENTIFIER);
 {number}     RETURN_NUMBER(decimal_number,NUMBER);
-.            printf("\033[0;31m[ERROR]\033[0m Unexpected symbol in the lexer %s\n",yytext);exit(1);
+.            fprintf(stderr,"\033[0;31m[ERROR]\033[0m Unexpected symbol in the lexer %s\n",yytext);exit(1);
 
 %%
 #ifndef PRINT
