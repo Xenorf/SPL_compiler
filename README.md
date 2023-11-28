@@ -6,7 +6,7 @@ Big thanks to Brian Tompsett and Lydia Bryan-Smith for their help during the sem
 The compiler has been designed to compile the SPL language into C. The language specifications can be find [here](git_ressources/definition_SPL_language.pdf).  
 
 ## Requirements
-> :warning: **If you are a Windows or MacOS user**: This repository is meant to be used on Ubuntu. It's still possible to run the compiler on Windows but this document don't explain how.
+> :warning: **If you are a Windows or MacOS user**: This repository is meant to be used on Ubuntu. It's still possible to run the compiler on Windows but this document doesn't explain how.
 
 * Install Python 3 `apt-get install python3`.
 * Install GCC `apt-get install gcc`.
