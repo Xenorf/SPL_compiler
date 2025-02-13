@@ -3,7 +3,7 @@
 This compiler was created as part of the module **Languages and their compilers** in Hull University in autumn 2021.  
 Big thanks to Brian Tompsett and Lydia Bryan-Smith for their help during the semester.  
 <br />
-The compiler has been designed to compile the SPL language into C. The language specifications can be find [here](git_ressources/definition_SPL_language.pdf).  
+The compiler has been designed to compile the SPL language into C. The language specifications can be found [here](git_ressources/definition_SPL_language.pdf).  
 
 ## Requirements
 > :warning: **If you are a Windows or MacOS user**: This repository is meant to be used on Ubuntu. It's still possible to run the compiler on Windows but this document doesn't explain how.
@@ -35,7 +35,7 @@ The parser can be used in debug mode to see the rules used and the stack generat
 
 ---
 ### Tree
-The parse tree can be used in 2 differents ways:
+The parse tree can be used in 2 different ways:
 1. Printing the JSON format of the tree in the terminal. `./compile -m tree -p <src_program>`  
 
 ![Tree diagram](git_ressources/tree.drawio.png?raw=true)
@@ -51,7 +51,7 @@ The PNG tree will be created inside the **tree_generator/** folder.
 
 ---
 ### Code
-The code feature can also be used in 2 differents ways:
+The code feature can also be used in 2 different ways:
 1. Printing the generated code in the terminal. `./compile -m code -p <src_program>`  
 
 ![Code diagram](git_ressources/code.drawio.png?raw=true)  
@@ -72,12 +72,12 @@ The compiler does some sort of type optimization, when there is an arithmetic ex
 <br />
 For example **78 - 5 -> a** will be compiled as **a = 73;**  
 Also **WRITE( (26 - 7) )** will be compiled as **printf("%d",19);**  
-It doesn't work with arithmetic expressions containing reals.
+It doesn't work with arithmetic expressions containing real numbers.
 
 ### Type coercion
 
 * Integers **can** be assigned to real numbers, it won't give any warning.
-* Reals **can** be assigned to integer but it will give a warning.
+* Reals **can** be assigned to an integer but it will give a warning.
 * Characters **can't** be assigned to anything else than character variables.
 * Arithmetic **can** be done between integers and reals.
 * Arithmetic **can** be done between characters, it's manipulate the ASCII values.
